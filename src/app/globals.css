@@ -1,26 +1,91 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/components.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Class-based dark mode (next-themes puts `dark` on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* ── Tailwind ⇄ tokens ──────────────────────────────────────────────────
+   Semantic tokens exposed as utilities: bg-canvas, text-fg-muted,
+   border-border-subtle, shadow-e2, text-h2 … `inline` makes each utility
+   read the semantic variable, so dark mode and .on-inverse remap them with
+   no extra classes. Radii and font families need no mapping: tokens.css
+   overrides Tailwind's own --radius-* and --font-* variables. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-canvas:  var(--surface-canvas);
+  --color-raised:  var(--surface-raised);
+  --color-sunken:  var(--surface-sunken);
+  --color-glass:   var(--surface-glass);
+  --color-inverse: var(--surface-inverse);
+
+  --color-fg:        var(--fg);
+  --color-fg-muted:  var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+
+  --color-accent:       var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft:  var(--accent-soft);
+  --color-on-accent:    var(--on-accent);
+  --color-signal:       var(--signal);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border:        var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger:  var(--danger);
+
+  --shadow-e1: var(--elev-1);
+  --shadow-e2: var(--elev-2);
+  --shadow-e3: var(--elev-3);
+  --shadow-e4: var(--elev-4);
+
+  --text-display: var(--type-display);
+  --text-display--line-height: 1.02;
+  --text-h2: var(--type-h2);
+  --text-h2--line-height: 1.08;
+  --text-h3: var(--type-h3);
+  --text-h3--line-height: 1.25;
+  --text-lead: var(--type-lead);
+  --text-lead--line-height: 1.6;
+  --text-label: var(--type-label);
+  --text-label--line-height: 1.4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--nav-height) + 1.5rem);   /* anchors clear the floating nav */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-}
+  html[data-scroll-locked] { overflow: hidden; }            /* set while a modal is open */
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background: var(--surface-canvas);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--type-body);
+    line-height: 1.65;
+    transition: background-color var(--dur-base) linear, color var(--dur-base) linear;
+  }
+
+  ::selection { background: var(--accent); color: var(--on-accent); }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+  /* Programmatic focus targets (<main> after "Skip to content") need no ring */
+  [tabindex="-1"]:focus { outline: none; }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--radius-pill); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
 }
