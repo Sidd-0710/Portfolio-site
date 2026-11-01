@@ -6,7 +6,7 @@ import { Reveal } from '@/components/ui/Reveal'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { ArrowRightIcon, ArrowUpRightIcon, GitHubIcon } from '@/components/ui/icons'
 import { cx } from '@/lib/cx'
-import { coverFor } from '@/content/case-studies'
+import { coverFor, phoneShotsFor } from '@/content/case-studies'
 import { PROJECTS, STATUS_DOT, STATUS_LABEL } from '@/content/projects'
 
 /**
@@ -22,12 +22,14 @@ export default function Projects() {
   return (
     <section id="projects" aria-labelledby="projects-heading" className="section">
       <div className="container-site">
-        <SectionHeader eyebrow="Projects" index={1} title="Things I've built" titleId="projects-heading" />
+        <SectionHeader eyebrow="Projects" index={1} title="Things I've built" highlight="built" titleId="projects-heading" />
 
         <ul className="grid gap-6 lg:grid-cols-2">
           {PROJECTS.map((p, i) => {
             const wide = lastIsWide && i === PROJECTS.length - 1
             const cover = coverFor(p.slug)
+            /* The wide card's image column is as tall as its text, so it has room for the phone screens too. */
+            const phones = wide ? phoneShotsFor(p.slug) : []
             const titleId = `project-${p.slug}-title`
 
             return (
@@ -38,17 +40,28 @@ export default function Projects() {
                   padding="lg"
                   id={`project-${p.slug}`}
                   aria-labelledby={titleId}
-                  className={cx('project-card flex w-full flex-col', wide && 'lg:grid lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:items-start lg:gap-x-10')}
+                  className={cx('project-card flex w-full flex-col', wide && 'lg:grid lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:items-stretch lg:gap-x-10')}
                 >
                   {cover && (
-                    <div className="project-card__cover">
+                    <div className={cx('project-card__cover', phones.length > 0 && 'project-card__cover--stage')}>
                       <Image
                         src={cover.src}
-                        alt=""   /* decorative here: the case study shows it with a full description */
+                        alt=""   /* decorative here: the case study shows them with full descriptions */
                         width={cover.width}
                         height={cover.height}
                         sizes="(min-width: 1024px) 540px, 100vw"
                       />
+                      {phones.map((shot, n) => (
+                        <Image
+                          key={shot.src}
+                          src={shot.src}
+                          alt=""
+                          width={shot.width}
+                          height={shot.height}
+                          sizes="180px"
+                          className={cx('project-card__phone', `project-card__phone--${n + 1}`)}
+                        />
+                      ))}
                     </div>
                   )}
 
@@ -64,7 +77,7 @@ export default function Projects() {
                       </span>
                     </div>
 
-                    <h3 className="card-title mt-4 text-h2">
+                    <h3 className="card-title project-card__title mt-4">
                       <Link href={`/projects/${p.slug}`} className="card-link">
                         {/* The space is its own text node: name algorithms that trim
                             each child would otherwise read "AutoValuecase study". */}
@@ -77,7 +90,7 @@ export default function Projects() {
                     {p.team && <p className="mt-2 font-mono text-xs text-fg-subtle">{p.team}</p>}
 
                     <ul aria-label="Tech stack" className="mt-5 flex flex-wrap gap-1.5">
-                      {p.stack.map(t => <li key={t} className="chip chip--accent">{t}</li>)}
+                      {p.stack.map(t => <li key={t} className="chip">{t}</li>)}
                     </ul>
 
                     <ul className="bullets mt-6 flex-1">

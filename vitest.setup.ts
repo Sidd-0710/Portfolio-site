@@ -28,6 +28,15 @@ const isBrowserLike = typeof window !== 'undefined'
 
 if (isBrowserLike) vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
 
+/* jsdom has no ResizeObserver (the nav rail re-measures with it). Nothing
+   ever resizes in jsdom, so a no-op observer is accurate. */
+class MockResizeObserver implements ResizeObserver {
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+}
+if (isBrowserLike) vi.stubGlobal('ResizeObserver', MockResizeObserver)
+
 /* jsdom has <dialog> but not showModal()/close(). Mimic the browser: open
    the dialog and focus its first focusable element; close fires "close". */
 if (isBrowserLike && typeof HTMLDialogElement.prototype.showModal !== 'function') {

@@ -1,15 +1,16 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { SOURCES_HEADER, type AskSource } from '@/lib/ask/types'
+import { CACHE_HEADER, SOURCES_HEADER, type AskSource } from '@/lib/ask/types'
 import { POST } from './route'
 
 let ipCounter = 0
 /** Each test gets its own visitor IP, because the rate limiter lives at module level. */
-function ask(question: unknown, ip = `10.0.0.${++ipCounter}`) {
+function ask(question: unknown, ip = `10.0.0.${++ipCounter}`, init: { headers?: Record<string, string>; signal?: AbortSignal } = {}) {
   return POST(new Request('http://localhost/api/ask', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ip },
+    headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ip, ...init.headers },
     body: JSON.stringify({ question }),
+    signal: init.signal,
   }))
 }
 
@@ -21,10 +22,12 @@ function groqStream(...parts: string[]) {
 
 beforeEach(() => {
   vi.stubEnv('GROQ_API_KEY', 'test-key')
+  vi.spyOn(console, 'info').mockImplementation(() => {})   // the route logs one JSON line per request
 })
 afterEach(() => {
   vi.unstubAllEnvs()
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 describe('POST /api/ask', () => {
@@ -73,13 +76,12 @@ describe('POST /api/ask', () => {
 
   it('turns upstream failures into friendly errors', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('nope', { status: 500 })))
-    vi.spyOn(console, 'error').mockImplementation(() => {})
-    const res = await ask('How accurate is AutoValue?')
+    const res = await ask('How accurate is the AutoValue model?')
     expect(res.status).toBe(502)
     expect(await res.json()).toEqual({ error: expect.stringMatching(/try again/) })
 
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network down')))
-    expect((await ask('How accurate is AutoValue?')).status).toBe(502)
+    expect((await ask('How accurate is the AutoValue model?')).status).toBe(502)
   })
 
   it('rate-limits a visitor after 8 questions in the window', async () => {
@@ -89,5 +91,60 @@ describe('POST /api/ask', () => {
     const blocked = await ask('How accurate is AutoValue?', ip)
     expect(blocked.status).toBe(429)
     expect(Number(blocked.headers.get('Retry-After'))).toBeGreaterThan(0)
+  })
+
+  it('answers a repeated question from the cache without calling the model again', async () => {
+    const fetchSpy = vi.fn().mockImplementation(() => Promise.resolve(groqStream('Seatly uses ', 'a queue model [1].')))
+    vi.stubGlobal('fetch', fetchSpy)
+
+    const first = await ask('How does Seatly estimate wait times?')
+    expect(first.headers.get(CACHE_HEADER)).toBe('miss')
+    expect(await first.text()).toBe('Seatly uses a queue model [1].')   // reading it to the end completes the cache entry
+
+    const repeat = await ask('  how does Seatly estimate wait times??')
+    expect(repeat.headers.get(CACHE_HEADER)).toBe('hit')
+    expect(await repeat.text()).toBe('Seatly uses a queue model [1].')
+    expect(JSON.parse(decodeURIComponent(repeat.headers.get(SOURCES_HEADER) ?? '[]'))).not.toEqual([])
+    expect(fetchSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not cache a failed answer', async () => {
+    const fetchSpy = vi.fn()
+      .mockResolvedValueOnce(new Response('nope', { status: 500 }))
+      .mockResolvedValueOnce(groqStream('Python, FastAPI and Node.js [1].'))
+    vi.stubGlobal('fetch', fetchSpy)
+    expect((await ask('What backend skills does he have?')).status).toBe(502)
+    const retry = await ask('What backend skills does he have?')
+    expect(retry.headers.get(CACHE_HEADER)).toBe('miss')
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('refuses questions posted from another website', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(groqStream('ok'))
+    vi.stubGlobal('fetch', fetchSpy)
+    const res = await ask('What has Sidd built?', undefined, { headers: { origin: 'https://evil.example' } })
+    expect(res.status).toBe(403)
+    expect((await ask('Has he deployed anything?', undefined, { headers: { origin: 'http://localhost' } })).status).not.toBe(403)
+    expect(fetchSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('rejects oversized request bodies before reading them', async () => {
+    const res = await POST(new Request('http://localhost/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'content-length': '50000' },
+      body: JSON.stringify({ question: 'x'.repeat(10) }),
+    }))
+    expect(res.status).toBe(413)
+  })
+
+  it('stops the model call when the visitor goes away', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(groqStream('ok'))
+    vi.stubGlobal('fetch', fetchSpy)
+    const visitor = new AbortController()
+    await ask('Where has he worked?', undefined, { signal: visitor.signal })
+    const { signal } = fetchSpy.mock.calls[0][1] as RequestInit
+    expect(signal?.aborted).toBe(false)
+    visitor.abort()
+    expect(signal?.aborted).toBe(true)
   })
 })

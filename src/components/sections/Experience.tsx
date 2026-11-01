@@ -6,10 +6,12 @@ import { JOBS } from '@/content/profile'
 export default function Experience() {
   return (
     <section id="experience" aria-labelledby="experience-heading" className="section section--sunken">
-      <div className="container-site">
-        <SectionHeader eyebrow="Experience" index={2} title="Where I've worked" titleId="experience-heading" />
+      <div className="container-site grid gap-x-12 lg:grid-cols-12">
+        <div className="lg:col-span-4">
+          <SectionHeader eyebrow="Experience" index={2} title="Where I've worked" highlight="worked" titleId="experience-heading" className="lg:sticky lg:top-28" />
+        </div>
 
-        <ol className="timeline max-w-3xl">
+        <ol className="timeline lg:col-span-8">
           {JOBS.map((job, i) => (
             <Reveal as="li" key={job.company} delay={i * 120} className="relative">
               <span aria-hidden="true" className="timeline__node" />

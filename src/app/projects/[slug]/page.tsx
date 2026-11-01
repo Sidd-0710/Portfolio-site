@@ -62,7 +62,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 
 function Bullets({ items }: { items: readonly string[] }) {
   return (
-    <ul className="bullets max-w-[68ch] [&>li]:text-base">
+    <ul className="bullets max-w-prose [&>li]:text-base">
       {items.map(item => <li key={item}>{item}</li>)}
     </ul>
   )
@@ -91,9 +91,9 @@ function CaseStudySkeleton() {
       <div className="cs-hero on-inverse">
         <div className="container-site pt-28 pb-20">
           <div className="grid max-w-3xl gap-5">
-            <div className="h-4 w-28 rounded-pill bg-[rgb(255_255_255/0.08)]" />
-            <div className="h-16 w-2/3 rounded-lg bg-[rgb(255_255_255/0.08)]" />
-            <div className="h-6 w-full rounded-lg bg-[rgb(255_255_255/0.06)]" />
+            <div className="h-4 w-28 rounded-pill skeleton" />
+            <div className="h-16 w-2/3 rounded-lg skeleton" />
+            <div className="h-6 w-full rounded-lg skeleton" />
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@ async function CaseStudyContent({ params }: { params: PageProps<'/projects/[slug
 
   return (
       <main id="main" tabIndex={-1}>
-        {/* ── Header: dark inverse band, like the home hero ───────────── */}
+        {/* ── Header: a deep-blue cover ────────────────────────────────── */}
         <header className="cs-hero on-inverse">
           <div aria-hidden="true" className="hero__glow" />
           <div className="container-site relative pt-28 pb-14 md:pb-20">
@@ -125,7 +125,7 @@ async function CaseStudyContent({ params }: { params: PageProps<'/projects/[slug
             <div className="mt-8 grid gap-5 max-w-3xl">
               <p className="eyebrow">Case study · {String(index + 1).padStart(2, '0')}</p>
               <h1 className="cs-title">{project.name}</h1>
-              <p className="lead">{study.tagline}</p>
+              <p className="standfirst max-w-[44ch]">{study.tagline}</p>
               <div className="flex flex-wrap items-center gap-3">
                 <span className="pill">
                   <span aria-hidden="true" className={STATUS_DOT[project.status]} />
@@ -153,7 +153,7 @@ async function CaseStudyContent({ params }: { params: PageProps<'/projects/[slug
               {study.metrics.map(m => (
                 <Card key={m.label} variant="glass" padding="md" className="flex flex-col-reverse gap-1.5">
                   <dt className="font-mono text-xs leading-snug text-fg-subtle">{m.label}</dt>
-                  <dd className="font-serif text-[clamp(1.4rem,1.1rem+1.2vw,2rem)] font-bold leading-none text-accent">{m.value}</dd>
+                  <dd className="stat-figure self-start">{m.value}</dd>
                 </Card>
               ))}
             </dl>
@@ -168,7 +168,7 @@ async function CaseStudyContent({ params }: { params: PageProps<'/projects/[slug
 
           <article aria-label={`${project.name} case study`} className="min-w-0">
             <Section id="problem" title="The problem">
-              <div className="grid max-w-[68ch] gap-4 prose-muted text-lg">
+              <div className="grid max-w-prose gap-4 prose-muted text-lg">
                 {study.problem.map(p => <p key={p}>{p}</p>)}
               </div>
             </Section>

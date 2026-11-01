@@ -2,11 +2,11 @@ import Link from 'next/link'
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, Ref } from 'react'
 import { cx } from '@/lib/cx'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'glass'
+export type ButtonVariant = 'primary' | 'solid' | 'secondary' | 'ghost' | 'glass'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
 interface ButtonOwnProps {
-  /** primary: tactile accent fill · secondary: raised surface · ghost: text only · glass: frosted, for busy or dark backdrops */
+  /** primary: ink outline that fills on hover · solid: coral fill, navy text · secondary: raised surface · ghost: text only · glass: frosted, for busy or dark backdrops */
   variant?: ButtonVariant
   /** sm 36px · md 44px · lg 52px tall */
   size?: ButtonSize

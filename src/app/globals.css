@@ -9,8 +9,8 @@
    Semantic tokens exposed as utilities: bg-canvas, text-fg-muted,
    border-border-subtle, shadow-e2, text-h2 … `inline` makes each utility
    read the semantic variable, so dark mode and .on-inverse remap them with
-   no extra classes. Radii and font families need no mapping: tokens.css
-   overrides Tailwind's own --radius-* and --font-* variables. */
+   no extra classes. Radii and the sans/mono families need no mapping:
+   tokens.css overrides Tailwind's own --radius-* and --font-* variables. */
 @theme inline {
   --color-canvas:  var(--surface-canvas);
   --color-raised:  var(--surface-raised);
@@ -25,6 +25,7 @@
   --color-accent:       var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft:  var(--accent-soft);
+  --color-accent-fill:  var(--accent-fill);
   --color-on-accent:    var(--on-accent);
   --color-signal:       var(--signal);
 
@@ -40,6 +41,8 @@
   --shadow-e2: var(--elev-2);
   --shadow-e3: var(--elev-3);
   --shadow-e4: var(--elev-4);
+
+  --font-display: var(--font-head);
 
   --text-display: var(--type-display);
   --text-display--line-height: 1.02;
@@ -71,7 +74,7 @@
     transition: background-color var(--dur-base) linear, color var(--dur-base) linear;
   }
 
-  ::selection { background: var(--accent); color: var(--on-accent); }
+  ::selection { background: var(--accent-fill); color: var(--on-accent); }
 
   :focus-visible {
     outline: 2px solid var(--focus-ring);

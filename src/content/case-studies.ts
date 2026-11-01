@@ -244,3 +244,8 @@ export function findCaseStudy(slug: string): CaseStudy | undefined {
 export function coverFor(slug: string): Shot | undefined {
   return findCaseStudy(slug)?.shots.find(s => s.frame === 'desktop')
 }
+
+/** Up to two phone screenshots, shown beside the cover where a card has room. */
+export function phoneShotsFor(slug: string): Shot[] {
+  return (findCaseStudy(slug)?.shots ?? []).filter(s => s.frame === 'phone').slice(0, 2)
+}

@@ -9,3 +9,6 @@ export interface AskSource {
 
 /** Response header carrying the sources as URI-encoded JSON (AskSource[]). */
 export const SOURCES_HEADER = 'X-Ask-Sources'
+
+/** Response header saying whether the answer came from the answer cache: "hit" or "miss". */
+export const CACHE_HEADER = 'X-Ask-Cache'

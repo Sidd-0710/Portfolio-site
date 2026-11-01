@@ -25,6 +25,8 @@ export const CONTACT = {
   github: 'https://github.com/Sidd-0710',
 } as const
 
+export const RESUME_URL = '/Siddheshwar-Chirkute-Resume.pdf'
+
 export interface Job {
   role: string
   company: string
@@ -73,17 +75,9 @@ export const ABOUT_PARAGRAPHS: readonly string[] = [
   'Away from the screen, you’ll find me cycling, swimming, or halfway through an anime or a romance series.',
 ]
 
-export interface Hobby {
-  emoji: string
-  label: string
-}
+export type Hobby = 'Cycling' | 'Swimming' | 'Anime' | 'Movies'
 
-export const HOBBIES: readonly Hobby[] = [
-  { emoji: '🚴', label: 'Cycling'  },
-  { emoji: '🏊', label: 'Swimming' },
-  { emoji: '⛩️', label: 'Anime'    },
-  { emoji: '🎬', label: 'Movies'   },
-]
+export const HOBBIES: readonly Hobby[] = ['Cycling', 'Swimming', 'Anime', 'Movies']
 
 export interface Stat {
   value: string

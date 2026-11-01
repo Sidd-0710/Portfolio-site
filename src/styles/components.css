@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════════════
-   Component styles. Every value comes from tokens.css.
+   Component styles — "Ivory Press". Every value comes from tokens.css.
    Layered so Tailwind utilities on the same element still win
    (e.g. `btn hidden md:inline-flex`).
    ════════════════════════════════════════════════════════════════════ */
@@ -7,27 +7,10 @@
 @layer components {
 
   /* ── Inverse context ────────────────────────────────────────────────
-     Remaps semantic tokens for dark surfaces that stay dark in both themes
-     (hero, contact panel, nav over the hero). Children need no variants:
-     a primary Button inside turns signal-cyan automatically. */
-  .on-inverse {
-    --fg: var(--fg-inverse);
-    --fg-muted: var(--fg-inverse-muted);
-    --fg-subtle: #9aa3b2;
-    --accent: var(--signal-400);
-    --accent-hover: var(--signal-300);
-    --accent-soft: rgb(120 214 219 / 0.12);
-    --on-accent: #071317;
-    --focus-ring: var(--signal-400);
-    --border-subtle: rgb(255 255 255 / 0.06);
-    --border: rgb(255 255 255 / 0.12);
-    --border-strong: rgb(255 255 255 / 0.2);
-    --surface-glass: rgb(255 255 255 / 0.06);
-    --glass-edge: rgb(255 255 255 / 0.12);
-    --edge-light: inset 0 1px 0 rgb(255 255 255 / 0.08);
-    --spotlight: rgb(120 214 219 / 0.10);
-    color: var(--fg);
-  }
+     Deep-blue panels in both themes (contact panel, skills network,
+     case-study covers, the Ask button). tokens.css gives `.on-inverse`
+     the night roles, so children need no variants. */
+  .on-inverse { color: var(--fg); }
 
   /* ── Layout ─────────────────────────────────────────────────────── */
   .container-site {
@@ -37,46 +20,79 @@
     padding-inline: var(--gutter);
   }
   .section { padding-block: var(--section-space); }
+  /* Alternate sections: a deeper paper, fading hairlines top and bottom,
+     a faint coral warmth in the top-right corner */
   .section--sunken {
-    background: var(--surface-sunken);
-    border-block: 1px solid var(--border-subtle);
+    background:
+      var(--hairline) top / 100% 1px no-repeat,
+      var(--hairline) bottom / 100% 1px no-repeat,
+      radial-gradient(45% 35% at 100% 0%, rgb(var(--coral-rgb) / 0.06), transparent 70%),
+      var(--surface-sunken);
   }
 
   /* ── Type roles ─────────────────────────────────────────────────── */
+  /* Role "label": small uppercase sans, widely tracked. Declared once;
+     each component below overrides only what differs. */
+  .eyebrow, .pill, .btn, .nav__link, .nav__role, .nav__status,
+  .hero__tags, .hero__strip, .net-hint, .cs-back,
+  .site-footer__links a, .site-footer__top {
+    font-family: var(--font-label);
+    font-size: var(--type-label);
+    font-weight: 600;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+  }
+  /* Role "headline": the editorial serif, sentence case. */
+  .section-title, .card-title, .hero__title, .cs-title, .cs-h2, .modal__title,
+  .nav__name, .nav__mark, .nav__menu-link, .stat-figure, .site-footer__name,
+  .net-label__title, .standfirst {
+    font-family: var(--font-head);
+    font-weight: var(--weight-title);
+    letter-spacing: var(--tracking-snug);
+    text-transform: none;
+  }
+
+  /* The one accent word in a headline: italic coral. Large type only:
+     coral is 3.2:1 on ivory, which passes for text 24px and up. */
+  .title-accent {
+    font-style: italic;
+    font-weight: var(--weight-display);
+    color: var(--accent-fill);
+  }
+
+  /* "—— 01  PROJECTS": a coral rule, an italic serif number, the label */
   .eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    gap: 0.75rem;
+    color: var(--fg-muted);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: var(--accent-fill);
+  }
+  .eyebrow__index {
+    font-family: var(--font-head);
+    font-style: italic;
+    font-weight: var(--weight-title);
+    font-size: var(--type-sm);
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--accent);
   }
-  /* Code-style label: "// 01. PROJECTS". The "/ ''" alt text keeps screen
-     readers from announcing "slash slash". */
-  .eyebrow::before {
-    content: "//";
-    content: "//" / "";
-    opacity: 0.55;
-  }
-  .eyebrow__index { color: var(--fg-subtle); }
   .section-title {
-    font-family: var(--font-serif);
-    font-weight: 650;
+    font-weight: var(--weight-display);
     font-size: var(--type-h2);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
+    line-height: 1.04;
+    letter-spacing: var(--tracking-tight);
     color: var(--fg);
     text-wrap: balance;
   }
   .card-title {
-    font-family: var(--font-serif);
-    font-weight: 650;
     font-size: var(--type-h3);
-    line-height: 1.25;
-    letter-spacing: -0.01em;
+    line-height: 1.2;
     color: var(--fg);
   }
   .lead {
@@ -86,28 +102,45 @@
     text-wrap: pretty;
     max-width: 60ch;
   }
-  .prose-muted { color: var(--fg-muted); line-height: 1.7; text-wrap: pretty; }
+  /* The magazine "standfirst": a serif line under a big headline */
+  .standfirst {
+    font-weight: 400;
+    font-size: var(--type-h3);
+    line-height: 1.4;
+    color: var(--fg-muted);
+    text-wrap: balance;
+    max-width: 30ch;
+  }
+  /* Stat numbers (About, case-study covers) */
+  .stat-figure {
+    font-weight: var(--weight-display);
+    font-size: var(--type-figure);
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  /* Loading placeholder on blue surfaces */
+  .skeleton { background: rgb(var(--white-rgb) / 0.08); }
+  .prose-muted { color: var(--fg-muted); line-height: 1.75; text-wrap: pretty; }
 
-  /* Bulleted list with a small accent square, aligned to the first line */
-  .bullets { display: grid; gap: 0.5rem; align-content: start; }
+  /* Bulleted list: a short coral rule aligned to the first line */
+  .bullets { display: grid; gap: 0.55rem; align-content: start; }
   .bullets > li {
     position: relative;
-    padding-left: 1.125rem;
+    padding-left: 1.35rem;
     color: var(--fg-muted);
     font-size: var(--type-sm);
-    line-height: 1.65;
+    line-height: 1.7;
     text-wrap: pretty;
   }
   .bullets > li::before {
     content: "";
     position: absolute;
     left: 0;
-    top: 0.62em;
-    width: 5px;
-    height: 5px;
-    border-radius: 1px;
-    background: var(--accent);
-    opacity: 0.7;
+    top: calc(0.85em - 1px);   /* whole pixels, so every rule renders the same coral */
+    width: 0.6rem;
+    height: 2px;
+    background: var(--accent-fill);
   }
 
   /* ── Chip, pill, status ─────────────────────────────────────────── */
@@ -119,31 +152,23 @@
     line-height: 1.4;
     padding: 0.2rem 0.7rem;
     border-radius: var(--radius-pill);
-    background: var(--surface-sunken);
-    border: 1px solid var(--border-subtle);
+    background: transparent;
+    border: 1px solid var(--border);
     color: var(--fg-muted);
     white-space: nowrap;
+    transition: border-color var(--dur-fast) linear, color var(--dur-fast) linear;
   }
-  /* Project tech stack: tinted with the accent, like a label on the work itself */
-  .chip--accent {
-    background: var(--accent-soft);
-    border-color: transparent;
-    color: var(--accent);
-    font-weight: 500;
-  }
+  .card--interactive:hover .chip { border-color: var(--border-strong); color: var(--fg); }
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 0.85rem;
+    gap: 0.55rem;
+    padding: 0.4rem 0.9rem;
     border-radius: var(--radius-pill);
     background: var(--surface-glass);
-    border: 1px solid var(--border);   /* visible on white cards and on the hero alike */
+    border: 1px solid var(--border);
     box-shadow: var(--edge-light);
     backdrop-filter: blur(var(--glass-blur));
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
-    letter-spacing: 0.06em;
     color: var(--fg-muted);
   }
   .dot {
@@ -151,20 +176,20 @@
     height: 7px;
     border-radius: 50%;
     flex: none;
-    background: var(--accent);
+    background: var(--accent-fill);
     box-shadow: 0 0 0 3px var(--accent-soft);
   }
-  .dot--live { background: var(--live); box-shadow: 0 0 0 3px rgb(34 197 94 / 0.18); }
+  .dot--live { background: var(--live); box-shadow: var(--glow-halo); }
   .dot--idle { background: var(--fg-subtle); box-shadow: 0 0 0 3px var(--border-subtle); }
   .dot--pulse { animation: dot-pulse 2.4s var(--ease-standard) infinite; }
 
   /* ── Button ─────────────────────────────────────────────────────────
-     Tactile: a top-lit fill, a 1px lit top edge, a shaded bottom edge and
-     a tinted drop shadow. Hover lifts 1px, press sinks and compresses. */
+     Uppercase, tracked pills. Primary is an ink outline that fills with
+     ink on hover; solid coral is kept for the one action per view. */
   .btn {
     --btn-h: 2.75rem;
-    --btn-px: 1.125rem;
-    --btn-fs: var(--type-sm);
+    --btn-px: 1.35rem;
+    --btn-fs: var(--type-caption);
     --btn-bg: transparent;
     --btn-fg: var(--fg);
     --btn-border: transparent;
@@ -174,16 +199,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.65rem;
     height: var(--btn-h);
     padding-inline: var(--btn-px);
-    border-radius: var(--radius-pill);   /* matches the nav capsule and pills; icon-only buttons become circles */
+    border-radius: var(--radius-pill);
     border: 1px solid var(--btn-border);
     background: var(--btn-bg);
     color: var(--btn-fg);
     box-shadow: var(--btn-shadow);
     font-size: var(--btn-fs);
-    font-weight: 550;
+    letter-spacing: var(--tracking-wider);
     line-height: 1;
     white-space: nowrap;
     cursor: pointer;
@@ -192,7 +217,7 @@
     transition:
       transform var(--dur-fast) var(--ease-out),
       box-shadow var(--dur-base) var(--ease-out),
-      background-color var(--dur-fast) linear,
+      background-color var(--dur-base) linear,
       border-color var(--dur-fast) linear,
       color var(--dur-fast) linear;
   }
@@ -210,23 +235,27 @@
   .btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
   .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
 
-  .btn--sm { --btn-h: 2.25rem; --btn-px: 0.95rem; --btn-fs: var(--type-xs); }
-  .btn--lg { --btn-h: 3.25rem; --btn-px: 1.6rem; --btn-fs: var(--type-body); }
+  .btn--sm { --btn-h: 2.25rem; --btn-px: 1.05rem; --btn-fs: var(--type-label); }
+  .btn--lg { --btn-h: 3.25rem; --btn-px: 1.75rem; --btn-fs: var(--type-xs); }
   .btn--icon { width: var(--btn-h); padding-inline: 0; }
   .btn--block { width: 100%; }
 
   .btn--primary {
-    --btn-bg: linear-gradient(180deg, color-mix(in srgb, var(--accent) 92%, white) 0%, var(--accent) 100%);
+    --btn-border: var(--fg);
+    --btn-shadow-hover: var(--elev-2);
+    --btn-shadow-press: var(--well-inset);
+  }
+  @media (hover: hover) {
+    .btn--primary:hover { --btn-bg: var(--fg); --btn-fg: var(--surface-canvas); }
+  }
+  /* Coral, navy lettering: for the one action we most want taken */
+  .btn--solid {
+    --btn-bg: var(--accent-fill);
     --btn-fg: var(--on-accent);
-    --btn-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.25),
-      inset 0 -1px 0 rgb(0 0 0 / 0.12),
-      var(--elev-2);
-    --btn-shadow-hover:
-      inset 0 1px 0 rgb(255 255 255 / 0.25),
-      inset 0 -1px 0 rgb(0 0 0 / 0.12),
-      var(--elev-3);
-    --btn-shadow-press: inset 0 1px 2px rgb(0 0 0 / 0.2), var(--elev-1);
+    --btn-border: var(--accent-fill);
+    --btn-shadow: inset 0 1px 0 rgb(var(--white-rgb) / 0.25), var(--glow-sm);
+    --btn-shadow-hover: inset 0 1px 0 rgb(var(--white-rgb) / 0.25), var(--glow-md);
+    --btn-shadow-press: inset 0 1px 3px rgb(var(--black-rgb) / 0.2);
   }
   .btn--secondary {
     --btn-bg: var(--surface-raised);
@@ -240,12 +269,12 @@
   .btn--ghost:hover { --btn-fg: var(--fg); --btn-bg: color-mix(in srgb, var(--fg) 7%, transparent); }
   .btn--glass {
     --btn-bg: var(--surface-glass);
-    --btn-border: var(--glass-edge);
+    --btn-border: var(--border-strong);
     --btn-shadow: var(--edge-light);
     --btn-shadow-hover: var(--edge-light), var(--elev-2);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   }
-  .btn--glass:hover { --btn-border: var(--border-strong); }
+  .btn--glass:hover { --btn-border: var(--fg); }
 
   .btn__label { display: inline-flex; align-items: center; }
   .btn svg { flex: none; transition: transform var(--dur-base) var(--ease-out); }
@@ -262,10 +291,11 @@
   }
 
   /* ── Card ───────────────────────────────────────────────────────────
-     Elevated by default. Interactive cards lift and show a pointer-following
-     sheen; tilt cards also rotate toward the pointer. JS (usePointerDepth)
-     only writes --px/--py in [-1, 1] and --mx/--my in %; this file owns the
-     magnitudes, so --tilt-max: 0 turns tilt off everywhere. */
+     Paper held up to the light: a touch brighter than the page, a lit top
+     edge, a blue-tinted shadow. Interactive cards lift, show a pointer-
+     following coral warmth and a coral-to-ink hairline; tilt cards also
+     rotate toward the pointer. JS (usePointerDepth) only writes --px/--py
+     in [-1, 1] and --mx/--my in %; this file owns the magnitudes. */
   .card {
     --card-pad: clamp(1.25rem, 1rem + 1vw, 1.5rem);
     --card-lift: 0px;
@@ -273,7 +303,7 @@
     isolation: isolate;
     padding: var(--card-pad);
     border-radius: var(--radius-lg);
-    background: var(--surface-raised);
+    background: var(--sheen), var(--surface-raised);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--edge-light), var(--elev-2);
   }
@@ -288,13 +318,15 @@
     border-color: var(--glass-edge);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   }
+  /* Deep-blue panel with a coral dawn in one corner */
   .card--inverse {
     background:
-      radial-gradient(60% 80% at 100% 0%, rgb(120 214 219 / 0.14), transparent 60%),
-      radial-gradient(50% 70% at 0% 100%, rgb(58 132 202 / 0.16), transparent 60%),
+      var(--sheen),
+      radial-gradient(55% 90% at 100% 100%, rgb(var(--coral-rgb) / 0.28), transparent 65%),
+      radial-gradient(45% 60% at 0% 0%, rgb(var(--ivory-rgb) / 0.07), transparent 70%),
       var(--surface-inverse);
-    border-color: rgb(255 255 255 / 0.08);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), var(--elev-4);
+    border-color: rgb(var(--ivory-rgb) / 0.1);
+    box-shadow: inset 0 1px 0 rgb(var(--white-rgb) / 0.07), var(--elev-3);
   }
 
   .card--interactive {
@@ -317,11 +349,11 @@
     .card--interactive:hover {
       --card-lift: var(--lift-hover);
       border-color: var(--border);
-      box-shadow: var(--edge-light), var(--elev-3);
+      box-shadow: var(--edge-light), var(--elev-3), var(--card-glow);
     }
   }
   .card--interactive:focus-within {
-    border-color: var(--accent);
+    border-color: var(--accent-fill);
     box-shadow: var(--edge-light), var(--elev-3);
   }
   .card--interactive::before {
@@ -336,44 +368,114 @@
     pointer-events: none;
   }
   .card--interactive:hover::before { opacity: 1; }
+  .card--interactive::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--grad-edge);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity var(--dur-base) linear;
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .card--interactive:hover::after { opacity: 1; }
+  }
 
   /* ── Project cards (sections/Projects.tsx) ──────────────────────────
      The title link stretches over the whole card via ::after; buttons sit
      above it (z-index) and stay separately clickable. */
+  /* A deep-blue stage, warmed with coral from below; the screenshot rises
+     out of it like a print on a mount */
   .project-card__cover {
     overflow: hidden;
     aspect-ratio: 16 / 10;
+    padding: clamp(1rem, 0.6rem + 1.6vw, 1.75rem) clamp(1rem, 0.6rem + 1.6vw, 1.75rem) 0;
     border-radius: var(--radius-md);
-    border: 1px solid var(--border-subtle);
-    background: var(--surface-sunken);
-    box-shadow: var(--elev-1);
+    border: 1px solid rgb(var(--ivory-rgb) / 0.1);
+    background:
+      radial-gradient(85% 70% at 100% 100%, rgb(var(--coral-rgb) / 0.36), transparent 65%),
+      radial-gradient(70% 60% at 0% 0%, rgb(var(--ivory-rgb) / 0.1), transparent 70%),
+      var(--surface-inverse);
+    box-shadow: inset 0 1px 0 rgb(var(--white-rgb) / 0.06);
   }
-  .project-card__cover img {
+  .project-card__cover img:first-child {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: top;
-    transition: transform var(--dur-slow) var(--ease-out);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    box-shadow: 0 0 0 1px rgb(var(--ivory-rgb) / 0.12), 0 18px 40px -16px rgb(var(--black-rgb) / 0.6);
+    transform-origin: 50% 100%;
+    filter: var(--media-filter);
+    transition: transform var(--dur-slow) var(--ease-out), filter var(--dur-slow) var(--ease-out);
   }
-  .card-link { display: inline-flex; align-items: center; gap: 0.5rem; color: inherit; transition: color var(--dur-fast) linear; }
+  /* Project names sit a clear step below the section title (40px vs 60px) */
+  .project-card__title {
+    font-weight: var(--weight-display);
+    font-size: var(--type-h2-sub);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-tight);
+  }
+
+  /* Wide card on desktop: the stage grows to the text column's height and
+     composes the desktop shot with two phone screens below it. */
+  .project-card__phone { display: none; }
+  @media (min-width: 1024px) {
+    .project-card__cover--stage {
+      position: relative;
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+    .project-card__cover--stage img:first-child { height: auto; aspect-ratio: 16 / 10; }
+    .project-card__phone {
+      display: block;
+      position: absolute;
+      width: 32%;
+      height: auto;
+      aspect-ratio: 9 / 19;
+      object-fit: cover;
+      object-position: top;
+      border: 5px solid var(--device-frame);
+      border-radius: var(--radius-device);
+      box-shadow:
+        0 0 0 1px rgb(var(--ivory-rgb) / 0.16),
+        0 26px 50px -18px rgb(var(--black-rgb) / 0.7),
+        var(--glow-md);
+      filter: var(--media-filter);
+      transition: translate var(--dur-slow) var(--ease-out), filter var(--dur-slow) var(--ease-out);
+    }
+    .project-card__phone--1 { left: 16%; bottom: 7%; }
+    .project-card__phone--2 { right: 14%; bottom: 3%; }
+  }
+  @media (min-width: 1024px) and (hover: hover) {
+    .project-card:hover .project-card__phone--1 { translate: 0 -8px; }
+    .project-card:hover .project-card__phone--2 { translate: 0 -4px; }
+  }
+  .card-link { display: inline-flex; align-items: center; gap: 0.6rem; color: inherit; transition: color var(--dur-fast) linear; }
   /* z-index 1 lifts the overlay above positioned children (e.g. bullet <li>s), so the whole card is clickable */
   .card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
   .card-link:focus-visible { outline: none; }
-  .card-link__arrow { opacity: 0.45; transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) linear; }
+  .card-link__arrow { opacity: 0.45; transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) linear, color var(--dur-fast) linear; }
   .project-card .btn { z-index: 2; }   /* buttons stay above the card-wide link */
   .project-card:has(.card-link:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
   @media (hover: hover) {
-    .project-card:hover .card-link { color: var(--accent); }
-    .project-card:hover .card-link__arrow { opacity: 1; transform: translateX(4px); }
-    .project-card:hover .project-card__cover img { transform: scale(1.03); }
+    .project-card:hover .card-link__arrow { opacity: 1; color: var(--accent); transform: translateX(4px); }
+    .project-card:hover .project-card__cover img:first-child { transform: translateY(-6px) scale(1.015); }
+    /* Lights up the work you're pointing at */
+    .project-card:hover .project-card__cover img { filter: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .project-card__cover img { transition: none; }
-    .project-card:hover .project-card__cover img { transform: none; }
+    .project-card__cover img:first-child { transition: none; }
+    .project-card:hover .project-card__cover img:first-child { transform: none; }
   }
 
-  /* Icon well: a small inset tile that gives icons a physical seat */
+  /* Icon well: a small tinted tile that gives icons a seat */
   .icon-tile {
     display: grid;
     place-items: center;
@@ -382,7 +484,7 @@
     border-radius: var(--radius-md);
     background: var(--accent-soft);
     color: var(--accent);
-    box-shadow: var(--edge-light), inset 0 0 0 1px var(--border-subtle);
+    box-shadow: var(--edge-light), inset 0 0 0 1px rgb(var(--coral-rgb) / 0.2);
   }
 
   /* ── Link with an arrow that nudges diagonally ──────────────────── */
@@ -417,24 +519,24 @@
     padding-inline: 0.875rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
-    background: var(--surface-raised);
+    background: var(--surface-sunken);
     box-shadow: var(--well-inset);
     color: var(--fg);
-    font-size: 1rem;   /* ≥16px stops iOS zooming on focus */
+    font-size: var(--type-body);   /* ≥16px stops iOS zooming on focus */
     transition: border-color var(--dur-fast) linear, box-shadow var(--dur-base) var(--ease-out);
   }
   .input::placeholder { color: var(--fg-subtle); }
   .input:hover:not(:disabled) { border-color: var(--border-strong); }
   .input:focus-visible {
     outline: none;
-    border-color: var(--accent);
-    box-shadow: var(--well-inset), 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    border-color: var(--accent-fill);
+    box-shadow: var(--well-inset), var(--glow-halo);
   }
   .input[aria-invalid="true"] { border-color: var(--danger); }
   .input[aria-invalid="true"]:focus-visible {
     box-shadow: var(--well-inset), 0 0 0 3px color-mix(in srgb, var(--danger) 22%, transparent);
   }
-  .input:disabled { background: var(--surface-sunken); opacity: 0.65; cursor: not-allowed; }
+  .input:disabled { opacity: 0.65; cursor: not-allowed; }
   .input--sm { --input-h: 2.25rem; font-size: var(--type-sm); }
   .input--lg { --input-h: 3.25rem; }
   .input--with-icon { padding-left: 2.5rem; }
@@ -452,9 +554,9 @@
     padding: 0;
     width: min(var(--modal-w), calc(100vw - 2rem));
     max-height: calc(100dvh - 2rem);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border);
     border-radius: var(--radius-xl);
-    background: var(--surface-raised);
+    background: var(--sheen), var(--surface-overlay);
     color: var(--fg);
     box-shadow: var(--edge-light), var(--elev-4);
     /* Always clickable, even when rendered inside a pointer-events: none
@@ -473,11 +575,11 @@
     .modal[open] { opacity: 0; transform: perspective(var(--perspective)) translateY(12px) rotateX(-6deg) scale(0.98); }
   }
   .modal::backdrop {
-    background: rgb(10 14 23 / 0);
+    background: rgb(var(--blue-950-rgb) / 0);
     transition: background var(--dur-base) linear, overlay var(--dur-base) allow-discrete, display var(--dur-base) allow-discrete;
   }
-  .modal[open]::backdrop { background: rgb(10 14 23 / 0.5); }
-  @starting-style { .modal[open]::backdrop { background: rgb(10 14 23 / 0); } }
+  .modal[open]::backdrop { background: rgb(var(--blue-950-rgb) / 0.55); backdrop-filter: blur(6px); }
+  @starting-style { .modal[open]::backdrop { background: rgb(var(--blue-950-rgb) / 0); } }
 
   .modal--sm { --modal-w: 24rem; }
   .modal--lg { --modal-w: 44rem; }
@@ -491,135 +593,373 @@
     gap: 1rem;
     padding: 1.25rem 1.25rem 0 1.5rem;
   }
-  .modal__title { font-family: var(--font-serif); font-weight: 650; font-size: var(--type-h3); line-height: 1.3; padding-top: 0.35rem; }
+  .modal__title {
+    font-size: var(--type-h3);
+    line-height: 1.3;
+    padding-top: 0.35rem;
+  }
   .modal__description { margin-top: 0.25rem; font-size: var(--type-sm); color: var(--fg-muted); }
   .modal__body { padding: 1rem 1.5rem 1.5rem; overflow-y: auto; }
 
   /* ── Navigation ─────────────────────────────────────────────────────
-     A floating glass capsule. Over the home hero it dissolves into the hero
-     (transparent, inverse tokens); once scrolled it becomes frosted glass
-     one layer above the page. */
+     Three zones: a monogram and serif name, a rail of numbered links with
+     a highlight that slides between them, and actions. Over a hero it
+     floats transparent and tall; once scrolled it settles into a slim
+     frosted paper bar with a coral reading-progress line. */
   .nav {
     position: fixed;
     inset-inline: 0;
     top: 0;
     z-index: var(--z-nav);
-    padding-top: 0.75rem;
-    padding-inline: 0.75rem;
-    pointer-events: none;   /* the gutter around the capsule stays clickable */
-  }
-  .nav__bar {
-    pointer-events: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    height: calc(var(--nav-height) - 0.5rem);
-    max-width: var(--container);
-    margin-inline: auto;
-    padding-inline: 1.1rem 0.4rem;
-    border-radius: var(--radius-pill);
-    border: 1px solid transparent;
+    border-bottom: 1px solid transparent;
     transition:
       background-color var(--dur-slow) var(--ease-out),
       border-color var(--dur-slow) var(--ease-out),
       box-shadow var(--dur-slow) var(--ease-out);
   }
-  .nav[data-variant="solid"] .nav__bar {
+  .nav[data-variant="solid"] {
     background: var(--surface-glass);
-    border-color: var(--glass-edge);
-    box-shadow: var(--edge-light), var(--elev-3);
+    border-bottom-color: var(--border-subtle);
+    box-shadow: var(--elev-1);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   }
-  .nav__brand {
-    font-family: var(--font-serif);
-    font-weight: 700;
-    font-size: 1.25rem;
-    letter-spacing: -0.01em;
-    color: var(--fg);
+  .nav__bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    height: 4.75rem;
+    max-width: calc(var(--container) + 2 * var(--gutter));
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    transition: height var(--dur-slow) var(--ease-out);
   }
-  .nav__brand-dot { color: var(--signal); }
-  .nav__link {
+  .nav[data-variant="solid"] .nav__bar { height: 3.75rem; }
+  /* Below md the rail is hidden: brand takes the room, actions hug the right */
+  @media (max-width: 767px) {
+    .nav__bar { grid-template-columns: minmax(0, 1fr) auto; height: 4rem; }
+    .nav__brand .nav__role { letter-spacing: var(--tracking-wider); }
+  }
+
+  /* Monogram + name/role lockup */
+  .nav__brand {
     display: inline-flex;
     align-items: center;
-    height: 2.25rem;
-    padding-inline: 0.85rem;
-    border-radius: var(--radius-pill);
-    font-size: var(--type-sm);
-    color: var(--fg-muted);
-    transition: color var(--dur-fast) linear, background-color var(--dur-fast) linear;
+    gap: 0.75rem;
+    justify-self: start;
+    min-width: 0;
+    color: var(--fg);
   }
-  .nav__link:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 7%, transparent); }
-  .nav__link[aria-current="location"] { color: var(--fg); background: var(--accent-soft); }
+  /* A deep-blue seal with italic ivory initials and a coral full stop */
+  .nav__mark {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.375rem;
+    height: 2.375rem;
+    border-radius: 50%;
+    background: var(--surface-inverse);
+    box-shadow: inset 0 0 0 1px rgb(var(--ivory-rgb) / 0.14), var(--elev-2);
+    font-style: italic;
+    font-size: var(--type-body);
+    letter-spacing: 0;
+    color: var(--on-inverse);
+    transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+  }
+  .nav__mark::after {
+    content: "";
+    position: absolute;
+    right: 0.3rem;
+    bottom: 0.45rem;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-fill);
+  }
+  .nav__brand:hover .nav__mark { transform: rotate(-8deg) scale(1.04); box-shadow: inset 0 0 0 1px rgb(var(--ivory-rgb) / 0.2), var(--glow-sm); }
+  .nav__lockup { display: grid; gap: 0.1rem; min-width: 0; }
+  .nav__name {
+    font-size: var(--type-body);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--fg);
+  }
+  .nav__role {
+    font-size: var(--type-micro);
+    font-weight: 500;
+    line-height: 1.1;
+    white-space: nowrap;
+    color: var(--fg-subtle);
+  }
+
+  /* The rail: a hairline capsule; ::before is the sliding highlight,
+     positioned by JS through --ind-x / --ind-w. */
+  .nav__rail {
+    position: relative;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.25rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--fg) 2.5%, transparent);
+    box-shadow: var(--edge-light);
+    backdrop-filter: blur(var(--glass-blur));
+  }
+  .nav__rail::before {
+    content: "";
+    position: absolute;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    left: 0;
+    width: var(--ind-w, 0px);
+    transform: translateX(var(--ind-x, 0px));
+    border-radius: var(--radius-pill);
+    background: var(--surface-raised);
+    box-shadow: inset 0 0 0 1px rgb(var(--coral-rgb) / 0.45), var(--elev-1);
+    opacity: 0;
+    transition:
+      transform var(--dur-glide) var(--ease-out),
+      width var(--dur-glide) var(--ease-out),
+      opacity var(--dur-base) linear;
+    pointer-events: none;
+  }
+  .nav__rail[data-indicator]::before { opacity: 1; }
+  .nav__link {
+    position: relative;   /* above the highlight */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.25rem;
+    padding-inline: 1rem;
+    border-radius: var(--radius-pill);
+    color: var(--fg-muted);
+    transition: color var(--dur-fast) linear;
+  }
+  .nav__link:hover,
+  .nav__link[aria-current="location"] { color: var(--fg); }
+  .nav__link:focus-visible { outline-offset: 0; border-radius: var(--radius-pill); }
+  .nav__index {
+    font-family: var(--font-head);
+    font-style: italic;
+    font-size: var(--type-xs);
+    font-weight: var(--weight-title);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--accent);
+  }
+
+  .nav__actions { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+  .nav__status {
+    display: none;
+    align-items: center;
+    gap: 0.55rem;
+    margin-right: 0.5rem;
+    font-size: var(--type-micro);
+    white-space: nowrap;
+    color: var(--fg-muted);
+  }
+  @media (min-width: 1280px) {
+    .nav__status { display: inline-flex; }
+  }
+
+  /* Reading progress: grows with page scroll where scroll-driven animations
+     exist; elsewhere it simply stays hidden. */
+  .nav__progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--accent-fill);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    opacity: 0;
+    transition: opacity var(--dur-slow) linear;
+    pointer-events: none;
+  }
+  .nav[data-variant="solid"] .nav__progress { opacity: 1; }
+  @supports (animation-timeline: scroll()) {
+    .nav__progress { animation: nav-progress linear both; animation-timeline: scroll(root block); }
+  }
+
+  /* Mobile menu (inside the Modal): a serif table of contents */
   .nav__menu-link[aria-current="location"] { color: var(--accent); }
   .nav__menu-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.85rem 0.25rem;
+    padding: 0.95rem 0.25rem;
     border-bottom: 1px solid var(--border-subtle);
-    font-family: var(--font-serif);
-    font-weight: 600;
-    font-size: 1.35rem;
+    font-size: var(--type-h2-sub);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
     color: var(--fg);
   }
+  .nav__menu-link .nav__index { margin-right: 0.85rem; font-size: var(--type-sm); vertical-align: 0.35em; }
   .nav__menu-link svg { color: var(--fg-subtle); transition: transform var(--dur-base) var(--ease-out); }
   .nav__menu-link:hover svg { transform: translateX(3px); color: var(--accent); }
 
-  /* ── Hero ───────────────────────────────────────────────────────── */
+  /* ── Hero: the cover of the magazine ────────────────────────────── */
   .hero {
     position: relative;
     overflow: hidden;
-    background: var(--surface-inverse);
+    background: var(--surface-canvas);
   }
-  /* A hairline of signal light where the hero meets the page */
-  .hero::after {
+  /* A hairline under the cover, brightest in the middle */
+  .hero::after,
+  .cs-hero::after {
     content: "";
     position: absolute;
+    z-index: var(--z-raised);
     inset-inline: 0;
     bottom: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgb(120 214 219 / 0.45), transparent);
+    background: var(--hairline);
   }
+  /* Coral warmth behind the portrait, a breath of blue top-left */
   .hero__glow {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(45% 55% at 78% 38%, rgb(120 214 219 / 0.13), transparent 70%),
-      radial-gradient(40% 50% at 8% 92%, rgb(58 132 202 / 0.16), transparent 70%);
+      radial-gradient(38% 55% at 76% 58%, rgb(var(--coral-rgb) / 0.12), transparent 70%),
+      radial-gradient(40% 40% at 0% 0%, rgb(var(--blue-rgb) / 0.05), transparent 70%);
     pointer-events: none;
   }
-  /* Perspective grid floor: cheap CSS depth that also covers phones,
-     which never load the WebGL network. Animates transform only. */
-  .hero__floor {
+  /* Portrait stage: anchored to the bottom-right on desktop and cropped by
+     the hero's lower edge, like a cover photo; at the top on phones (the
+     text sits below it there). Decorative frame, so no pointer events. */
+  .hero__visual {
     position: absolute;
-    left: -30%;
-    right: -30%;
-    bottom: -2px;
-    height: 46%;
-    perspective: 520px;
-    mask-image: linear-gradient(to top, #000 5%, transparent 85%);
+    top: calc(var(--nav-height) + 1rem);
+    right: -18%;
+    width: min(118%, 34rem);
+    aspect-ratio: 1;
     pointer-events: none;
   }
-  .hero__floor::before {
+  @media (min-width: 640px) {
+    .hero__visual { right: -6%; width: min(80%, 36rem); }
+  }
+  @media (min-width: 1024px) {
+    .hero__visual {
+      top: auto;
+      bottom: 0;
+      right: max(-1rem, calc((100vw - var(--container)) / 2 - 6rem));
+      width: auto;
+      height: min(96svh, 58rem);
+      translate: 0 14%;
+    }
+  }
+  /* The deep-blue disc. Smaller than the photo, so the hair breaks out of
+     its top edge and the shoulders out of its sides. */
+  .hero__ring {
+    position: absolute;
+    inset: 15%;
+    border-radius: 50%;
+    background: var(--disc);
+    box-shadow: 0 40px 80px -36px rgb(var(--blue-rgb) / 0.55), inset 0 1px 0 rgb(var(--white-rgb) / 0.08);
+  }
+  /* A thin coral orbit around the disc; a satellite rides it with a short
+     fading tail, passing behind the head. The wrapper draws the orbit; the
+     arm inside it rotates. */
+  .hero__orbit {
+    position: absolute;
+    inset: 9%;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--coral-rgb) / 0.4);
+  }
+  .hero__satellite {
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    rotate: 50deg;
+    animation: orbit 32s linear infinite;
+  }
+  .hero__satellite::before {
     content: "";
     position: absolute;
-    inset: -56px 0 0;
-    background-image:
-      linear-gradient(rgb(120 214 219 / 0.13) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(120 214 219 / 0.13) 1px, transparent 1px);
-    background-size: 56px 56px;
-    transform: rotateX(62deg);
-    transform-origin: 50% 100%;
-    animation: floor-drift 9s linear infinite;
+    top: -5px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    border-radius: 50%;
+    background: var(--accent-fill);
+    box-shadow: var(--glow-halo), var(--glow-sm);
   }
-  .hero__canvas {
+  .hero__satellite::after {
+    content: "";
     position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 55%;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from -60deg, transparent 0deg, rgb(var(--coral-rgb) / 0.9) 60deg, transparent 60.5deg);
+    mask-image: radial-gradient(closest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
   }
+  .hero__portrait {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom;
+    filter: contrast(1.03) saturate(0.92) drop-shadow(0 26px 30px rgb(var(--blue-rgb) / 0.28));
+  }
+  /* Phones: the text overlaps the portrait's lower half, so the portrait
+     and its disc fade into the paper there */
+  @media (max-width: 1023px) {
+    .hero__portrait { mask-image: linear-gradient(to bottom, #000 38%, transparent 76%); }
+    .hero__ring, .hero__orbit { mask-image: linear-gradient(to bottom, #000 30%, transparent 70%); }
+  }
+  .hero__title {
+    font-weight: var(--weight-display);
+    font-size: var(--type-display);
+    line-height: 0.96;
+    letter-spacing: var(--tracking-tight);
+    color: var(--fg);
+  }
+  @media (forced-colors: active) {
+    .title-accent { color: CanvasText; }
+  }
+  /* A stacked keyword column beside a coral rule */
+  .hero__tags {
+    display: grid;
+    gap: 0.2rem;
+    padding-left: 0.85rem;
+    border-left: 1px solid var(--accent-fill);
+    font-size: var(--type-micro);
+    line-height: 1.5;
+    color: var(--fg-subtle);
+  }
+  /* "Build · Ship · Learn" along the foot of the cover */
+  .hero__strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 1rem;
+    font-size: var(--type-micro);
+    color: var(--fg-subtle);
+  }
+  .hero__strip li + li::before { content: "·"; margin-right: 1rem; color: var(--accent-fill); }
+
+  /* ── Skills network panel (sections/SkillsNetwork.tsx) ───────────────
+     A deep-blue plate in both themes: a fine ivory dot grid, coral light
+     low-right, the WebGL network on top. */
+  .skills-net {
+    position: relative;
+    height: clamp(19rem, 14rem + 9vw, 24rem);
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    border: 1px solid rgb(var(--ivory-rgb) / 0.1);
+    background:
+      radial-gradient(55% 75% at 75% 75%, rgb(var(--coral-rgb) / 0.22), transparent 70%),
+      radial-gradient(45% 55% at 15% 10%, rgb(var(--ivory-rgb) / 0.07), transparent 70%),
+      radial-gradient(rgb(var(--ivory-rgb) / 0.1) 1px, transparent 1px) 0 0 / 22px 22px,
+      var(--surface-inverse);
+    box-shadow: inset 0 1px 0 rgb(var(--white-rgb) / 0.06), var(--elev-3);
+  }
+  .skills-net .net-hint { right: 1.5rem; bottom: 1.25rem; }
 
   /* ── Interactive network (components/3d/NeuralNet.tsx) ──────────── */
   .net { position: relative; width: 100%; height: 100%; }
@@ -642,13 +982,10 @@
   }
   .net-label[data-visible] { opacity: 1; }
   .net-label__title {
-    font-family: var(--font-sans);
-    font-size: var(--type-sm);
-    font-weight: 600;
-    letter-spacing: 0;
+    font-size: var(--type-body);
     color: var(--fg);
   }
-  .net-label__kind { font-size: 0.6875rem; color: var(--fg-subtle); }
+  .net-label__kind { font-size: var(--type-label); color: var(--fg-subtle); }
   .net-hint {
     position: absolute;
     right: 10%;
@@ -656,45 +993,12 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
-    letter-spacing: 0.06em;
+    font-size: var(--type-micro);
     color: var(--fg-subtle);
     pointer-events: none;
     transition: opacity var(--dur-slow) var(--ease-out);
   }
   .net-hint--done { opacity: 0; }
-  .hero__title {
-    font-family: var(--font-serif);
-    font-weight: 700;
-    font-size: var(--type-display);
-    line-height: 1.02;
-    letter-spacing: -0.025em;
-    /* Top-lit lettering: bright cap height falling to a cool grey */
-    background: linear-gradient(180deg, #ffffff 25%, #b9c4d6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-wrap: balance;
-  }
-  @media (forced-colors: active) {
-    .hero__title { background: none; color: CanvasText; }
-  }
-  .hero__cue {
-    position: absolute;
-    left: 50%;
-    bottom: 1.5rem;
-    translate: -50% 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    color: var(--fg-subtle);
-  }
-  .hero__cue svg { animation: nudge 1.8s var(--ease-standard) infinite; }
 
   /* ── Experience timeline ────────────────────────────────────────── */
   .timeline { position: relative; display: grid; gap: 1.25rem; padding-left: 2rem; }
@@ -705,7 +1009,7 @@
     top: 1.5rem;
     bottom: 1.5rem;
     width: 1px;
-    background: linear-gradient(to bottom, var(--accent), var(--border) 60%, transparent);
+    background: linear-gradient(to bottom, var(--accent-fill), var(--border-strong) 35%, transparent);
   }
   .timeline__node {
     position: absolute;
@@ -714,34 +1018,33 @@
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background: var(--surface-raised);
-    border: 2px solid var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-soft);
+    background: var(--accent-fill);
+    border: 3px solid var(--surface-sunken);
+    box-shadow: 0 0 0 1px rgb(var(--coral-rgb) / 0.5), var(--glow-sm);
   }
 
   /* ── Case study pages (app/projects/[slug]) ─────────────────────── */
-  .cs-hero { position: relative; overflow: hidden; background: var(--surface-inverse); }
-  .cs-hero::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgb(120 214 219 / 0.45), transparent);
+  /* The case study opens on a deep-blue cover */
+  .cs-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(40% 70% at 95% 100%, rgb(var(--coral-rgb) / 0.26), transparent 70%),
+      radial-gradient(45% 55% at 0% 0%, rgb(var(--ivory-rgb) / 0.06), transparent 70%),
+      var(--surface-inverse);
   }
   .cs-title {
-    font-family: var(--font-serif);
-    font-weight: 700;
+    font-weight: var(--weight-display);
     font-size: var(--type-display);
-    line-height: 1.02;
-    letter-spacing: -0.025em;
+    line-height: 0.98;
+    letter-spacing: var(--tracking-tight);
     color: var(--fg);
   }
   .cs-back {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: var(--type-sm);
+    letter-spacing: var(--tracking-wider);
     color: var(--fg-muted);
     transition: color var(--dur-fast) linear;
   }
@@ -750,11 +1053,10 @@
   .cs-back:hover svg { transform: translateX(-3px); }
 
   .cs-h2 {
-    font-family: var(--font-serif);
-    font-weight: 650;
-    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
+    font-weight: var(--weight-display);
+    font-size: var(--type-h2-sub);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
     color: var(--fg);
   }
   .cs-section { scroll-margin-top: calc(var(--nav-height) + 1.5rem); }
@@ -764,19 +1066,19 @@
   .cs-toc a {
     display: block;
     padding: 0.35rem 0 0.35rem 0.9rem;
-    border-left: 2px solid var(--border);
+    border-left: 1px solid var(--border);
     font-size: var(--type-sm);
     color: var(--fg-subtle);
     transition: color var(--dur-fast) linear, border-color var(--dur-fast) linear;
   }
   .cs-toc a:hover { color: var(--fg); }
-  .cs-toc a[aria-current="location"] { color: var(--accent); border-left-color: var(--accent); }
+  .cs-toc a[aria-current="location"] { color: var(--fg); border-left-color: var(--accent-fill); }
 
   /* ── Screenshot frames ──────────────────────────────────────────────
      Desktop shots sit in a browser frame with a slight backward tilt that
      settles flat on hover (the imagery spec in docs/design-system.md). */
   .shot { display: grid; gap: 0.75rem; }
-  .shot__caption { font-size: var(--type-xs); color: var(--fg-subtle); text-align: center; }
+  .shot__caption { font-family: var(--font-head); font-style: italic; font-size: var(--type-sm); color: var(--fg-subtle); text-align: center; }
   .shot__frame {
     position: relative;
     overflow: hidden;
@@ -784,7 +1086,10 @@
     border: 1px solid var(--border);
     background: var(--surface-raised);
     box-shadow: var(--edge-light), var(--elev-3);
+    filter: var(--media-filter);
+    transition: filter var(--dur-slow) var(--ease-out);
   }
+  .shot:hover .shot__frame { filter: none; }
   .shot__frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
   .shot--desktop .shot__frame { aspect-ratio: 16 / 10; padding-top: 1.75rem; }
   .shot--desktop .shot__frame::before {   /* browser chrome: three dots */
@@ -802,16 +1107,16 @@
     aspect-ratio: 9 / 18;
     max-width: 280px;
     margin-inline: auto;
-    border-radius: 28px;
-    border: 6px solid var(--ink-800);
+    border-radius: var(--radius-device);
+    border: 6px solid var(--device-frame);
   }
-  .shot--figure .shot__frame { padding: 1rem; background: #ffffff; }
+  .shot--figure .shot__frame { padding: 1rem; background: var(--white); }
   .shot--figure .shot__frame img { object-fit: contain; }
   @media (min-width: 1024px) and (hover: hover) {
     .shot--desktop .shot__frame {
       transform: perspective(var(--perspective)) rotateX(4deg);
       transform-origin: 50% 100%;
-      transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out);
+      transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out), filter var(--dur-slow) var(--ease-out);
     }
     .shot--desktop:hover .shot__frame { transform: none; box-shadow: var(--edge-light), var(--elev-4); }
   }
@@ -823,16 +1128,20 @@
     counter-increment: flow;
     padding: 1rem 1.1rem;
     border-radius: var(--radius-md);
-    background: var(--surface-raised);
+    background: var(--sheen), var(--surface-raised);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--edge-light), var(--elev-1);
   }
+  /* Step numbers in italic serif, like footnote markers */
   .flow__step::before {
     content: counter(flow, decimal-leading-zero);
     display: block;
     margin-bottom: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
+    font-family: var(--font-head);
+    font-style: italic;
+    font-size: var(--type-h3);
+    font-weight: var(--weight-title);
+    line-height: 1;
     color: var(--accent);
   }
   .flow__title { font-weight: 600; color: var(--fg); }
@@ -845,8 +1154,8 @@
     bottom: -0.75rem;
     width: 1px;
     height: 0.75rem;
-    background: var(--accent);
-    opacity: 0.6;
+    background: var(--accent-fill);
+    opacity: 0.7;
   }
   /* One row from lg (step count comes from --flow-steps), so no connector dangles at a wrap */
   @media (min-width: 1024px) {
@@ -863,7 +1172,15 @@
     bottom: max(1rem, env(safe-area-inset-bottom));
     z-index: var(--z-nav);
   }
-  .ask-launcher .btn { box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), var(--elev-4); }
+  /* A deep-blue pill in both themes, coral sparkle */
+  .ask-launcher .btn {
+    --btn-bg: rgb(var(--blue-950-rgb) / 0.94);
+    --btn-border: rgb(var(--coral-rgb) / 0.45);
+    --btn-shadow: inset 0 1px 0 rgb(var(--white-rgb) / 0.08), 0 14px 32px -12px rgb(var(--blue-rgb) / 0.6);
+    --btn-shadow-hover: inset 0 1px 0 rgb(var(--white-rgb) / 0.1), 0 16px 36px -12px rgb(var(--blue-rgb) / 0.7), var(--glow-sm);
+  }
+  .ask-launcher .btn:hover { --btn-border: var(--accent-fill); }
+  .ask-launcher .btn svg { color: var(--accent); }
   .ask { display: grid; gap: 1.25rem; }
   .ask__suggestion {
     padding: 0.5rem 0.9rem;
@@ -876,7 +1193,7 @@
     text-align: left;
     transition: border-color var(--dur-fast) linear, transform var(--dur-fast) var(--ease-out);
   }
-  .ask__suggestion:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .ask__suggestion:hover { border-color: var(--accent-fill); transform: translateY(-1px); }
   .ask__log { display: grid; gap: 1.25rem; max-height: min(52dvh, 30rem); overflow-y: auto; padding-right: 0.25rem; }
   .ask__turn { display: grid; gap: 0.6rem; }
   .ask__question {
@@ -885,6 +1202,7 @@
     padding: 0.6rem 0.95rem;
     border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-lg);
     background: var(--accent-soft);
+    border: 1px solid rgb(var(--coral-rgb) / 0.25);
     color: var(--fg);
     font-size: var(--type-sm);
   }
@@ -911,7 +1229,7 @@
     font-size: var(--type-xs);
     color: var(--fg-muted);
   }
-  .ask__sources a:hover { color: var(--accent); border-color: var(--accent); }
+  .ask__sources a:hover { color: var(--accent); border-color: var(--accent-fill); }
   .ask__source-n {
     display: grid;
     place-items: center;
@@ -921,7 +1239,7 @@
     background: var(--accent-soft);
     color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: var(--type-label);
   }
   .ask__typing { display: inline-flex; gap: 0.3rem; padding: 0.35rem 0; }
   .ask__typing i {
@@ -950,6 +1268,49 @@
   /* Hero entrance: position only, so the headline paints at full opacity */
   .rise { animation: rise var(--dur-reveal) var(--ease-out) var(--reveal-delay, 0ms) both; }
 
+  /* ── Footer: seal and name, quick links, back to top ─────────────── */
+  .site-footer { padding-block: 2rem; background: var(--hairline) top / 100% 1px no-repeat; }
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem 2.5rem;
+  }
+  .site-footer__brand { display: inline-flex; align-items: center; gap: 0.75rem; }
+  .site-footer__name {
+    display: block;
+    font-size: var(--type-body);
+    color: var(--fg);
+  }
+  .site-footer__meta { display: block; margin-top: 0.2rem; font-size: var(--type-xs); color: var(--fg-subtle); }
+  .site-footer__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; }
+  .site-footer__links a,
+  .site-footer__top {
+    color: var(--fg-muted);
+    transition: color var(--dur-fast) linear;
+  }
+  .site-footer__links a:hover,
+  .site-footer__top:hover { color: var(--accent); }
+  .site-footer__top { display: inline-flex; align-items: center; gap: 0.5rem; }
+
+  /* ── Paper grain (desktop): a fixed noise tile over everything.
+     Overlay blending keeps the paper's and the ink's average colour; it
+     only adds texture. Phones skip it: the blend costs GPU time and the
+     texture is invisible on dense screens. */
+  @media (min-width: 1024px) {
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-grain);
+      background-image: var(--grain);
+      mix-blend-mode: overlay;
+      opacity: var(--grain-opacity);
+      pointer-events: none;
+    }
+  }
+
   /* ── Skip link ──────────────────────────────────────────────────── */
   .skip-link {
     position: fixed;
@@ -958,7 +1319,7 @@
     z-index: var(--z-skip);
     padding: 0.6rem 1rem;
     border-radius: var(--radius-sm);
-    background: var(--accent);
+    background: var(--accent-fill);
     color: var(--on-accent);
     font-size: var(--type-sm);
     font-weight: 550;
@@ -970,12 +1331,14 @@
 
 @keyframes rise        { from { transform: translateY(18px); } }
 @keyframes spin        { to { transform: rotate(360deg); } }
-@keyframes nudge       { 50% { transform: translateY(4px); } }
-@keyframes floor-drift { to { transform: rotateX(62deg) translateY(56px); } }
 @keyframes dot-pulse   { 50% { box-shadow: 0 0 0 6px transparent; } }
 @keyframes typing      { 30% { opacity: 0.25; transform: translateY(-2px); } }
+@keyframes nav-progress { to { transform: scaleX(1); } }
+@keyframes orbit        { to { rotate: 410deg; } }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { transform: none; }
-  .rise, .hero__floor::before, .hero__cue svg, .dot--pulse, .ask__typing i { animation: none; }
+  .rise, .dot--pulse, .ask__typing i, .hero__satellite { animation: none; }
+  .nav__rail::before { transition: opacity var(--dur-fast) linear; }   /* jumps instead of sliding */
+  .project-card__phone { transition: none; }
 }

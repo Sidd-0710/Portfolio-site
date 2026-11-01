@@ -32,7 +32,7 @@ function RowContent({ Icon, label, value, external }: Omit<ContactLink, 'href'>)
     <>
       <span className="icon-tile shrink-0"><Icon size={18} /></span>
       <span className="min-w-0 flex-1">
-        <span className="block font-mono text-label uppercase tracking-[0.08em] text-fg-subtle">{label}</span>
+        <span className="block font-mono text-label uppercase tracking-wide text-fg-subtle">{label}</span>
         {/* break-all keeps the long email address inside the card on narrow phones */}
         <span className="block break-all text-sm text-fg">{value}</span>
       </span>
@@ -54,8 +54,8 @@ export default function Contact() {
           {/* Inverse panel: the page's one dark, glowing surface outside the hero */}
           <Card variant="inverse" padding="lg" className="grid gap-10 lg:grid-cols-2 lg:gap-14 lg:p-14">
             <div className="grid content-start gap-4">
-              <p className="eyebrow"><span aria-hidden="true" className="eyebrow__index">05.</span>Contact</p>
-              <h2 id="contact-heading" className="section-title">Let&apos;s talk</h2>
+              <p className="eyebrow"><span aria-hidden="true" className="eyebrow__index">05</span>Contact</p>
+              <h2 id="contact-heading" className="section-title">Let&apos;s <span className="title-accent">talk</span></h2>
               <p className="lead">
                 I&apos;m looking for a full-time role, remote from India or on-site in Pune, Bangalore, Hyderabad or Mumbai. If you have an opportunity or just want to say hi, reach out.
               </p>

@@ -14,7 +14,7 @@ interface CardOwnProps<E extends CardElement> {
   /**
    * elevated: raised surface (default) · glass: frosted over busy backdrops ·
    * outline: flat, border only · sunken: inset well · inverse: dark panel with
-   * signal glow (wrap content in `.on-inverse` tokens automatically)
+   * coral glow (wraps content in `.on-inverse` tokens automatically)
    */
   variant?: CardVariant
   /** none 0 · sm 16px · md 20–24px · lg 24–36px (fluid) */

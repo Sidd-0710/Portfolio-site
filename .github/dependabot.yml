@@ -1,0 +1,19 @@
+# Weekly update pull requests, so security patches (like the Next.js 16.4.3
+# fix) arrive on their own instead of waiting for someone to run npm audit.
+# Each PR runs CI before it can be merged.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # Minor and patch releases together, one PR a week
+      minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

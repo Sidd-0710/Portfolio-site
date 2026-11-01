@@ -1,6 +1,6 @@
 import type { AnchorHTMLAttributes } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Navbar, { NAV_LINKS } from './Navbar'
 
@@ -58,13 +58,13 @@ describe('Navbar', () => {
     for (const { label } of NAV_LINKS) {
       expect(within(nav).getByRole('link', { name: label })).not.toHaveAttribute('data-next-link')
     }
-    expect(within(nav).getByRole('link', { name: 'Sidd, home' })).toHaveAttribute('data-next-link')
+    expect(within(nav).getByRole('link', { name: 'Siddheshwar Chirkute, home' })).toHaveAttribute('data-next-link')
   })
 
   it('scrolls back to the top when the logo is clicked on the home page', async () => {
     const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
     render(<Navbar />)
-    await userEvent.click(screen.getByRole('link', { name: 'Sidd, home' }))
+    await userEvent.click(screen.getByRole('link', { name: 'Siddheshwar Chirkute, home' }))
     expect(scrollTo).toHaveBeenCalledWith({ top: 0 })
     scrollTo.mockRestore()
   })
@@ -89,14 +89,32 @@ describe('Navbar', () => {
     document.querySelectorAll('section').forEach(s => s.remove())
   })
 
-  it('dissolves into the hero only at the top of the home page', () => {
-    const { unmount } = render(<Navbar />)
-    const header = screen.getByRole('banner')
-    expect(header).toHaveAttribute('data-variant', 'hero')
-    expect(header).toHaveClass('on-inverse')
+  it('shows the rail highlight only for a current, hovered or focused link', async () => {
+    mockPathname = '/projects/seatly'                       // no current section here
+    render(<Navbar />)
+    const about = within(screen.getByRole('navigation', { name: 'Main' })).getByRole('link', { name: 'About' })
+    const rail = about.closest('ul')
+    expect(rail).not.toHaveAttribute('data-indicator')
+
+    about.focus()
+    await waitFor(() => expect(rail).toHaveAttribute('data-indicator'))
+    about.blur()
+    await waitFor(() => expect(rail).not.toHaveAttribute('data-indicator'))
+  })
+
+  it('dissolves into the hero at the top of the page, in ivory over the blue case-study covers', () => {
+    const { unmount } = render(<Navbar />)                    // home: ivory cover, ink tokens
+    expect(screen.getByRole('banner')).toHaveAttribute('data-variant', 'hero')
+    expect(screen.getByRole('banner')).not.toHaveClass('on-inverse')
     unmount()
 
-    mockPathname = '/projects/autovalue'
+    mockPathname = '/projects/autovalue'                       // case study: deep-blue cover
+    const study = render(<Navbar />)
+    expect(screen.getByRole('banner')).toHaveAttribute('data-variant', 'hero')
+    expect(screen.getByRole('banner')).toHaveClass('on-inverse')
+    study.unmount()
+
+    mockPathname = '/some-missing-page'
     render(<Navbar />)
     expect(screen.getByRole('banner')).toHaveAttribute('data-variant', 'solid')
     expect(screen.getByRole('banner')).not.toHaveClass('on-inverse')

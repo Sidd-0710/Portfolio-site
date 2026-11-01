@@ -5,6 +5,7 @@ import { Canvas, useFrame, type ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 import { cx } from '@/lib/cx'
 import { REDUCED_MOTION_QUERY, useMediaQuery } from '@/lib/hooks'
+import { PALETTE } from '@/styles/palette'
 
 /** A point in 3D space. */
 export type Vec3 = readonly [x: number, y: number, z: number]
@@ -105,11 +106,12 @@ export function ndcToPixels(ndc: { x: number; y: number }, size: { width: number
   }
 }
 
-/** The hero behind this canvas is dark in both themes, so the network always uses the glow palette. */
-const ACCENT = '#78d6db'
-const ACCENT_BRIGHT = '#c4f1f3'
-const EDGE_DIM = new THREE.Color(ACCENT).multiplyScalar(0.45)
-const EDGE_LIT = new THREE.Color(ACCENT_BRIGHT)
+/** The panel behind this canvas is deep blue in both themes: ivory skills and
+    links, coral projects. Colours come from the brand palette. */
+const IVORY = PALETTE.ivory200
+const CORAL = PALETTE.coral400
+const EDGE_DIM = new THREE.Color(IVORY).multiplyScalar(0.3)
+const EDGE_LIT = new THREE.Color(PALETTE.coral300)
 
 /** Writes node `i`'s drifted position at time `t` (seconds) into `out`. */
 function driftPosition(i: number, t: number, out: THREE.Vector3): THREE.Vector3 {
@@ -141,9 +143,9 @@ function Network({ pointer, hovered, onHover, onSelect, labelRef }: NetworkProps
   const scratch     = useMemo(() => new THREE.Vector3(), [])
   const scratchTop  = useMemo(() => new THREE.Vector3(), [])
   const colors      = useMemo(() => ({
-    plain:   new THREE.Color(ACCENT).multiplyScalar(0.7),
-    skill:   new THREE.Color(ACCENT),
-    project: new THREE.Color(ACCENT_BRIGHT),
+    plain:   new THREE.Color(IVORY).multiplyScalar(0.45),
+    skill:   new THREE.Color(IVORY),
+    project: new THREE.Color(CORAL),
   }), [])
 
   /* Two endpoints × xyz per edge, seeded with the resting layout. */
@@ -249,8 +251,8 @@ function Network({ pointer, hovered, onHover, onSelect, labelRef }: NetworkProps
       </lineSegments>
 
       <ambientLight intensity={0.3} />
-      <directionalLight position={[5, 5, 5]} intensity={1.2} color={ACCENT} />
-      <pointLight position={[-4, -2, 2]} intensity={0.8} color={ACCENT} />
+      <directionalLight position={[5, 5, 5]} intensity={1.2} color={PALETTE.white} />
+      <pointLight position={[-4, -2, 2]} intensity={0.9} color={CORAL} />
     </group>
   )
 }
@@ -267,23 +269,24 @@ function StaticFallback() {
       {EDGES.map(([a, b]) => {
         const p = toSvg(NODES[a].base)
         const q = toSvg(NODES[b].base)
-        return <line key={`${a}-${b}`} x1={p.cx} y1={p.cy} x2={q.cx} y2={q.cy} stroke={ACCENT} strokeWidth="1" strokeOpacity="0.5" />
+        return <line key={`${a}-${b}`} x1={p.cx} y1={p.cy} x2={q.cx} y2={q.cy} stroke={IVORY} strokeWidth="1" strokeOpacity="0.35" />
       })}
       {NODES.map((n, i) => {
         const { cx, cy } = toSvg(n.base)
-        return <circle key={i} cx={cx} cy={cy} r={n.size * 40} fill={ACCENT} opacity="0.8" />
+        const fill = n.kind === 'project' || n.kind === 'about' ? CORAL : IVORY
+        return <circle key={i} cx={cx} cy={cy} r={n.size * 40} fill={fill} opacity="0.8" />
       })}
     </svg>
   )
 }
 
 interface NeuralNetProps {
-  /** When false, the render loop pauses (e.g. while the hero is scrolled out of view). */
+  /** When false, the render loop pauses (e.g. while its panel is scrolled out of view). */
   active?: boolean
 }
 
 /**
- * Interactive 3D network for the hero. Client-only: load it with
+ * Interactive 3D network for the Skills panel. Client-only: load it with
  * `next/dynamic` and `ssr: false`.
  *
  * - The whole network leans toward the pointer anywhere in the window.
@@ -337,7 +340,7 @@ export default function NeuralNet({ active = true }: NeuralNetProps) {
   return (
     <div className="net" data-hovering={hovered !== null || undefined}>
       <Canvas
-        camera={{ position: [0, 0, 7], fov: 55 }}
+        camera={{ position: [0, 0, 6], fov: 55 }}
         dpr={[1, 1.5]}
         frameloop={active ? 'always' : 'never'}
         fallback={<StaticFallback />}

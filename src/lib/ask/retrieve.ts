@@ -46,6 +46,30 @@ export function stem(term: string): string {
   return t
 }
 
+/**
+ * Query expansion for the few words a recruiter uses that the site's content
+ * doesn't: each stemmed question term adds the stemmed terms the content uses
+ * for the same idea. Found by the retrieval evaluation (retrieval-eval.test.ts),
+ * and kept small and specific so off-topic questions still match nothing.
+ */
+const SYNONYMS: Readonly<Record<string, readonly string[]>> = {
+  database: ['mongodb'],            // "database" → MongoDB
+  databas:  ['mongodb'],            // "databases"
+  db:       ['mongodb'],
+  mobile:   ['native'],             // "mobile apps" → React Native
+  hobby:    ['hobbi'],              // "hobby" → "hobbies"
+  relocation: ['site', 'remote'],   // "relocation" → on-site / remote
+  reloc:    ['site', 'remote'],     // "relocate", "relocating"
+  move:     ['site', 'remote'],
+  payment:  ['pay', 'upi'],         // "payments" → "pay by UPI"
+}
+
+/** The question's distinct terms plus their expansions. */
+export function expandQuery(question: string): string[] {
+  const terms = tokenize(question)
+  return [...new Set(terms.flatMap(t => [t, ...(SYNONYMS[t] ?? [])]))]
+}
+
 export interface ScoredChunk {
   chunk: Chunk
   score: number
@@ -59,14 +83,25 @@ const K1 = 1.2
 const B = 0.75
 /** Title words count double: a chunk titled "Skills: Backend" is about backend. */
 const TITLE_WEIGHT = 2
+/**
+ * Title coverage (a light BM25F): added in proportion to how much of a
+ * chunk's title the question covers. "What is Signal?" covers half of
+ * "Project: Signal" but a quarter of "Signal case study: Results", so the
+ * overview wins. Weight chosen by sweeping 0–4 on the retrieval evaluation:
+ * 0.75 gave the best hit@1 and MRR with full recall; heavier weights let
+ * section words ("How it works") outrank real matches ("remote work").
+ */
+const TITLE_COVERAGE = 0.75
 
 /** Builds a BM25 index over the chunks once; `search` is then cheap per question. */
 export function buildIndex(chunks: readonly Chunk[]): Index {
   const docs = chunks.map(chunk => {
-    const terms = [...tokenize(chunk.text), ...Array.from({ length: TITLE_WEIGHT }, () => tokenize(chunk.title)).flat()]
+    /* "case study" stays in: it dilutes section titles, which is what lets an overview win a bare "What is Signal?" */
+    const titleTerms = new Set(tokenize(chunk.title))
+    const terms = [...tokenize(chunk.text), ...Array.from({ length: TITLE_WEIGHT }, () => [...titleTerms]).flat()]
     const tf = new Map<string, number>()
     for (const t of terms) tf.set(t, (tf.get(t) ?? 0) + 1)
-    return { chunk, tf, length: terms.length }
+    return { chunk, tf, length: terms.length, titleTerms }
   })
   const avgLength = docs.reduce((sum, d) => sum + d.length, 0) / Math.max(docs.length, 1)
   const df = new Map<string, number>()
@@ -78,7 +113,7 @@ export function buildIndex(chunks: readonly Chunk[]): Index {
 
   return {
     search(question, limit = 4) {
-      const terms = [...new Set(tokenize(question))]
+      const terms = expandQuery(question)
       if (terms.length === 0) return []
       return docs
         .map(d => {
@@ -87,6 +122,10 @@ export function buildIndex(chunks: readonly Chunk[]): Index {
             const f = d.tf.get(t)
             if (!f) continue
             score += idf(t) * (f * (K1 + 1)) / (f + K1 * (1 - B + B * (d.length / avgLength)))
+          }
+          if (score > 0 && d.titleTerms.size > 0) {
+            const covered = terms.filter(t => d.titleTerms.has(t)).length
+            score += TITLE_COVERAGE * (covered / d.titleTerms.size)
           }
           return { chunk: d.chunk, score }
         })

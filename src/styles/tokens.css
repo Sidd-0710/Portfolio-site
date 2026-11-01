@@ -1,96 +1,132 @@
 /* ════════════════════════════════════════════════════════════════════
-   Design tokens — "Ink & Signal"
-   Three tiers:
-     1. Brand primitives (raw values; swap these to rebrand)
-     2. Semantic roles (what components use; remapped for dark mode)
+   Design tokens — "Ivory Press"
+   Three colours: Warm Ivory #F6F1E7, Deep Editorial Blue #11244A,
+   Coral Orange #E8572F. An editorial system: serif headlines on paper,
+   blue ink, one coral accent per view. Three tiers:
+     1. Brand primitives (the only raw values; swap these to rebrand)
+     2. Semantic roles (what components use; remapped per theme)
      3. System scales (elevation, depth, 3D, motion, radii, type, layout)
-   Components must reference tier 2 and 3 only. Rationale and specs:
-   docs/design-system.md
+   Components reference tiers 2 and 3 only; design-system.test.ts
+   enforces it. Rationale and specs: docs/design-system.md
    ════════════════════════════════════════════════════════════════════ */
 
 :root {
   /* ── 1. Brand primitives ─────────────────────────────────────────── */
-  --ink-950: #0a0e17;
-  --ink-900: #111827;
-  --ink-800: #1d2433;   /* resume header navy */
-  --ink-700: #2a3346;
-  --ink-600: #404858;
-  --ink-400: #8b93a3;
-  --ink-200: #ced3dc;
+  --ivory-0:   #fffdf8;   /* cards: paper held up to the light */
+  --ivory-50:  #f6f1e7;   /* Warm Ivory: the page */
+  --ivory-100: #eee6d6;   /* sunken bands */
+  --ivory-200: #f4eee3;   /* ivory text on blue */
+  --ivory-300: #c9c3b6;   /* muted text on blue */
 
-  --paper-50:  #fdfcf9;  /* resume page */
-  --paper-100: #f6f4ef;
-  --paper-200: #ece9e2;
+  --blue-500: #a6adbe;    /* subtle text on blue */
+  --blue-800: #27477f;    /* lit edge of the night disc */
+  --blue-850: #1d3766;    /* lit edge of the day disc */
+  --blue-600: #525c74;    /* subtle text on ivory */
+  --blue-700: #2e3a52;    /* body text on ivory */
+  --blue-900: #11244a;    /* Deep Editorial Blue: headlines, blue panels */
+  --blue-950: #0b1730;    /* night: the dark page, text on coral */
+  --blue-940: #0f1d3a;    /* dark sunken */
+  --blue-920: #142445;    /* dark raised */
+  --blue-880: #1a2d50;    /* dark overlay */
 
-  --cobalt-500: #3a84ca;
-  --cobalt-600: #1666aa;  /* resume link blue */
-  --cobalt-700: #0f528c;
+  --coral-300: #ffa287;   /* coral hover on blue */
+  --coral-400: #ff8160;   /* small coral text on blue (5.6:1) */
+  --coral-500: #e8572f;   /* Coral Orange: fills, rules, large italic words (3.2:1 on ivory) */
+  --coral-700: #ae3f1d;   /* small coral text on ivory (4.8:1) */
+  --coral-800: #8f3317;   /* coral hover on ivory */
+  --white: #ffffff;
 
-  --signal-300: #a6e8eb;
-  --signal-400: #78d6db;  /* resume title cyan */
-  --signal-500: #46bcc3;
+  /* Channel triplets for translucent tints: rgb(var(--coral-rgb) / 0.3).
+     Components may use these for tints; for solid colours they use roles. */
+  --ivory-rgb:     246 241 231;
+  --blue-rgb:      17 36 74;
+  --blue-950-rgb:  11 23 48;
+  --coral-rgb:     232 87 47;
+  --white-rgb:     255 255 255;
+  --black-rgb:     0 0 0;
+  --night-shadow-rgb: 3 8 20;   /* shadows in the dark theme: deeper than the page */
 
-  /* ── 2. Semantic roles — light ───────────────────────────────────── */
-  --surface-canvas:  var(--paper-50);    /* page background */
-  --surface-raised:  #ffffff;            /* cards, inputs */
-  --surface-sunken:  var(--paper-100);   /* wells, alternating sections */
-  --surface-glass:   rgb(255 255 255 / 0.72);
-  --surface-inverse: var(--ink-800);     /* hero, CTA panel: dark in both themes */
+  /* ── 2. Semantic roles — light ("ivory", default) ────────────────── */
+  --surface-canvas:  var(--ivory-50);
+  --surface-raised:  var(--ivory-0);
+  --surface-sunken:  var(--ivory-100);
+  --surface-glass:   rgb(var(--ivory-rgb) / 0.78);
+  --surface-overlay: var(--ivory-0);          /* modals and menus */
+  --surface-inverse: var(--blue-900);         /* blue panels: contact, skills network, covers, the seal */
+  --on-inverse:      var(--ivory-200);        /* text set directly on --surface-inverse */
+  --device-frame:    var(--blue-950);         /* bezels around phone screenshots */
 
-  --fg:          #151b2a;   /* 16.8:1 on canvas */
-  --fg-muted:    #474d5c;   /*  8.2:1 */
-  --fg-subtle:   #5d6169;   /*  6.1:1 — smallest text allowed */
-  --fg-inverse:  #f7f5f1;
-  --fg-inverse-muted: #c3cad6;
+  --fg:          var(--blue-900);   /* 13.6:1 on canvas */
+  --fg-muted:    var(--blue-700);   /*  9.2:1 on sunken */
+  --fg-subtle:   var(--blue-600);   /*  5.4:1 on sunken — smallest text allowed */
 
-  --accent:        var(--cobalt-600);  /* 5.8:1 on canvas */
-  --accent-hover:  var(--cobalt-700);
-  --accent-soft:   rgb(22 102 170 / 0.08);
-  --on-accent:     #ffffff;
-  --signal:        var(--signal-400);  /* glow/decoration; text only on inverse */
+  --accent:        var(--coral-700);   /* small coral text */
+  --accent-hover:  var(--coral-800);
+  --accent-fill:   var(--coral-500);   /* buttons, rules, dots, large italic words */
+  --accent-soft:   rgb(var(--coral-rgb) / 0.1);
+  --on-accent:     var(--blue-950);    /* navy on coral: 4.95:1 */
+  --signal:        var(--coral-500);   /* decoration only */
 
-  --border-subtle: rgb(21 27 42 / 0.07);
-  --border:        rgb(21 27 42 / 0.12);
-  --border-strong: rgb(21 27 42 / 0.22);
-  --focus-ring:    var(--cobalt-600);
+  /* Hairline around a hovered card: coral at the corners, ink between */
+  --grad-edge: linear-gradient(135deg, rgb(var(--coral-rgb) / 0.85), rgb(var(--blue-rgb) / 0.18) 40%, rgb(var(--blue-rgb) / 0.06) 60%, rgb(var(--coral-rgb) / 0.6));
 
-  --success:      #17703f;  --success-soft: rgb(23 112 63 / 0.10);
-  --warning:      #8a5300;  --warning-soft: rgb(138 83 0 / 0.10);
-  --danger:       #b42318;  --danger-soft:  rgb(180 35 24 / 0.08);
-  --info:         var(--accent); --info-soft: var(--accent-soft);
-  --live:         #22c55e;  /* status dot; decorative, never text */
+  --border-subtle: rgb(var(--blue-rgb) / 0.09);
+  --border:        rgb(var(--blue-rgb) / 0.16);
+  --border-strong: rgb(var(--blue-rgb) / 0.3);
+  --focus-ring:    var(--coral-500);
 
-  /* ── 3a. Elevation — shadows tinted with ink, never pure black ───── */
-  --shadow-rgb: 21 27 42;
-  --elev-0: 0 0 #0000;
+  --danger:       var(--coral-700); --danger-soft: rgb(var(--coral-rgb) / 0.1);
+  --live:         var(--coral-500);   /* "● LIVE" status dot; decorative */
+
+  /* Material details. Paper grain shows in both themes; sheen and screenshot
+     dimming only in the dark, where bright images would glare. */
+  --sheen:         linear-gradient(transparent, transparent);
+  --media-filter:  none;
+  --grain-opacity: 0.32;
+  /* Section divider: brightest in the middle, fading to nothing at the edges */
+  --hairline: linear-gradient(90deg, transparent, var(--border-strong) 50%, transparent);
+  /* Grain tile: mid-grey SVG noise, blended with overlay (body::after), so it
+     adds texture without shifting the paper's or the ink's average colour. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* The hero portrait's disc: deep blue, lit a little from the upper left */
+  --disc: radial-gradient(circle at 35% 30%, var(--blue-850), var(--blue-900) 62%, var(--blue-950));
+
+  /* ── 3a. Elevation — shadows tinted with blue ink, never pure black ── */
+  --shadow-rgb: var(--blue-rgb);
   --elev-1: 0 1px 2px rgb(var(--shadow-rgb) / 0.06), 0 1px 1px rgb(var(--shadow-rgb) / 0.04);
-  --elev-2: 0 1px 2px rgb(var(--shadow-rgb) / 0.05), 0 6px 16px -6px rgb(var(--shadow-rgb) / 0.12);
-  --elev-3: 0 2px 4px rgb(var(--shadow-rgb) / 0.05), 0 16px 32px -12px rgb(var(--shadow-rgb) / 0.18);
-  --elev-4: 0 4px 8px rgb(var(--shadow-rgb) / 0.06), 0 32px 64px -20px rgb(var(--shadow-rgb) / 0.28);
+  --elev-2: 0 1px 2px rgb(var(--shadow-rgb) / 0.05), 0 8px 20px -10px rgb(var(--shadow-rgb) / 0.14);
+  --elev-3: 0 2px 4px rgb(var(--shadow-rgb) / 0.05), 0 20px 36px -16px rgb(var(--shadow-rgb) / 0.22);
+  --elev-4: 0 4px 8px rgb(var(--shadow-rgb) / 0.06), 0 34px 64px -22px rgb(var(--shadow-rgb) / 0.32);
   /* 1px lit top edge: what makes a surface read as a physical material */
-  --edge-light:  inset 0 1px 0 rgb(255 255 255 / 0.85);
-  --edge-shade:  inset 0 -1px 0 rgb(var(--shadow-rgb) / 0.06);
+  --edge-light:  inset 0 1px 0 rgb(var(--white-rgb) / 0.9);
   --well-inset:  inset 0 1px 2px rgb(var(--shadow-rgb) / 0.08);
 
   /* ── 3b. Depth layers (z-index) ──────────────────────────────────── */
-  --z-base: 0;
   --z-raised: 1;
   --z-nav: 50;
-  --z-modal: 70;
+  --z-grain: 60;   /* above the page and nav; modals use the top layer */
   --z-skip: 100;
 
   /* ── 3c. 3D ──────────────────────────────────────────────────────── */
   --perspective:     1100px;
-  --tilt-max:        5deg;     /* pointer tilt on cards; 0 disables */
-  --tilt-max-subtle: 2.5deg;   /* full-width cards: same edge travel (~20px) at twice the width */
+  --tilt-max:        4deg;     /* pointer tilt on cards; 0 disables */
+  --tilt-max-subtle: 2deg;     /* full-width cards: same edge travel at twice the width */
   --lift-hover:      -3px;     /* translateY on hover */
   --lift-press:      1px;
   --press-scale:     0.98;
   --glass-blur:      16px;
-  --glass-saturate:  160%;
-  --glass-edge:      rgb(255 255 255 / 0.6);
-  --spotlight:       rgb(22 102 170 / 0.07);  /* pointer-following sheen on cards */
-  --glow-signal:     0 0 24px rgb(120 214 219 / 0.35);
+  --glass-saturate:  140%;
+  --glass-edge:      rgb(var(--white-rgb) / 0.7);
+  --spotlight:       rgb(var(--coral-rgb) / 0.06);   /* pointer-following sheen on cards */
+  --card-glow:       0 26px 50px -30px rgb(var(--blue-rgb) / 0.35);
+
+  /* Coral light, one scale: a 3px halo for dots and fields, then soft
+     glows, small and medium. Light on paper: a glow should read as a warm
+     shadow, not neon. */
+  --glow-halo: 0 0 0 3px rgb(var(--coral-rgb) / 0.2);
+  --glow-sm:   0 4px 14px -6px rgb(var(--coral-rgb) / 0.45);
+  --glow-md:   0 12px 28px -10px rgb(var(--coral-rgb) / 0.55);
 
   /* ── 3d. Motion ──────────────────────────────────────────────────── */
   --dur-instant: 80ms;
@@ -98,80 +134,126 @@
   --dur-base:    220ms;
   --dur-slow:    360ms;
   --dur-reveal:  640ms;
+  --dur-glide:   420ms;   /* the nav highlight sliding between links */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-out:      cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring:   cubic-bezier(0.34, 1.4, 0.64, 1); /* press release only */
 
-  /* ── 3e. Radii ───────────────────────────────────────────────────── */
-  --radius-xs:   4px;    /* chips */
-  --radius-sm:   8px;    /* inputs, small buttons */
-  --radius-md:   12px;   /* buttons */
-  --radius-lg:   16px;   /* cards */
-  --radius-xl:   24px;   /* panels, modals */
+  /* ── 3e. Radii — tighter than before: print, not plastic ────────── */
+  --radius-xs:   3px;    /* chips' inner details */
+  --radius-sm:   6px;    /* inputs */
+  --radius-md:   8px;    /* icon tiles, covers */
+  --radius-lg:   12px;   /* cards */
+  --radius-xl:   18px;   /* panels, modals */
   --radius-pill: 999px;
+  --radius-device: 22px; /* phone frames */
 
   /* ── 3f. Type ────────────────────────────────────────────────────────
-     Serif display (Source Serif 4, optical sizes) over a humanist sans
-     (Inter) with mono labels (JetBrains Mono). Fluid between 360–1440px.
-     These override Tailwind's own --font-* so font-serif etc. use them. */
+     Editorial serif headlines (Newsreader, optical sizes, with an italic
+     for the one accent word) over a neutral sans for body and labels
+     (Inter), and mono for tech tags (JetBrains Mono).
+     --font-head feeds Tailwind's `font-display` (globals.css). */
   --font-sans:  var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-head:  var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+  --font-label: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono:  var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
 
-  --type-display: clamp(2.75rem, 1.6rem + 4.8vw, 4.75rem);
-  --type-h2:      clamp(1.875rem, 1.45rem + 1.8vw, 2.75rem);
-  --type-h3:      clamp(1.125rem, 1.06rem + 0.3vw, 1.3125rem);
-  --type-lead:    clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  /* Headline weights: big type gets lighter as it grows, like a masthead */
+  --weight-display: 450;
+  --weight-title:   500;
+
+  /* Tracking: serif headlines tighten slightly; small uppercase labels open up */
+  --tracking-tight:  -0.022em;  /* display and section titles */
+  --tracking-snug:   -0.01em;   /* card and modal titles */
+  --tracking-wide:   0.06em;    /* monogram, mono labels */
+  --tracking-wider:  0.12em;    /* buttons, nav and footer links */
+  --tracking-widest: 0.18em;    /* eyebrows, pills, micro labels */
+
+  --type-display: clamp(2.6rem, 1.1rem + 5.6vw, 6rem);
+  --type-h2:      clamp(2.1rem, 1.35rem + 2.9vw, 3.75rem);
+  --type-h2-sub:  clamp(1.65rem, 1.3rem + 1.4vw, 2.5rem);   /* project names, case-study sections */
+  --type-figure:  clamp(2rem, 1.5rem + 1.8vw, 2.875rem);    /* stat numbers */
+  --type-h3:      clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --type-lead:    clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
   --type-body:    1rem;
   --type-sm:      0.9375rem;
   --type-xs:      0.8125rem;
-  --type-label:   0.75rem;
+  --type-caption: 0.75rem;
+  --type-label:   0.6875rem;
+  --type-micro:   0.625rem;
 
   /* ── 3g. Layout ──────────────────────────────────────────────────── */
   --container:      72rem;
   --gutter:         clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
-  --section-space:  clamp(4.5rem, 3rem + 6vw, 8rem);
+  --section-space:  clamp(5rem, 3.4rem + 6.5vw, 9rem);
   --nav-height:     4rem;
 }
 
-/* ── 2. Semantic roles — dark ──────────────────────────────────────── */
-.dark {
-  --surface-canvas:  var(--ink-950);
-  --surface-raised:  #131a27;
-  --surface-sunken:  #0d1220;
-  --surface-glass:   rgb(19 26 39 / 0.66);
-  --surface-inverse: #0f1522;
+/* ── 2. Semantic roles — "night" (dark theme, and always-blue panels) ── */
+.dark,
+.on-inverse {
+  --surface-canvas:  var(--blue-950);
+  --surface-raised:  var(--blue-920);
+  --surface-sunken:  var(--blue-940);
+  --surface-glass:   rgb(var(--blue-950-rgb) / 0.74);
+  --surface-overlay: var(--blue-880);
 
-  --fg:          #eef0f4;  /* 16.9:1 on canvas */
-  --fg-muted:    #b0b8c5;  /*  9.7:1 */
-  --fg-subtle:   #8b93a3;  /*  6.3:1 */
+  --fg:          var(--ivory-200);   /* 15.4:1 on canvas */
+  --fg-muted:    var(--ivory-300);   /*  7.8:1 on overlay */
+  --fg-subtle:   var(--blue-500);    /*  6.1:1 on overlay */
 
-  --accent:        var(--signal-400);
-  --accent-hover:  var(--signal-300);
-  --accent-soft:   rgb(120 214 219 / 0.10);
-  --on-accent:     #071317;
-  --focus-ring:    var(--signal-400);
+  --accent:        var(--coral-400);   /* 5.6:1 on overlay */
+  --accent-hover:  var(--coral-300);
+  --accent-soft:   rgb(var(--coral-rgb) / 0.16);
+  --focus-ring:    var(--coral-400);
 
-  --border-subtle: rgb(255 255 255 / 0.05);
-  --border:        rgb(255 255 255 / 0.09);
-  --border-strong: rgb(255 255 255 / 0.16);
+  --grad-edge: linear-gradient(135deg, rgb(var(--coral-rgb) / 0.9), rgb(var(--ivory-rgb) / 0.3) 40%, rgb(var(--ivory-rgb) / 0.08) 60%, rgb(var(--coral-rgb) / 0.7));
 
-  --success: #4ade80;  --success-soft: rgb(74 222 128 / 0.12);
-  --warning: #fbbf24;  --warning-soft: rgb(251 191 36 / 0.12);
-  --danger:  #f87171;  --danger-soft:  rgb(248 113 113 / 0.12);
+  --border-subtle: rgb(var(--ivory-rgb) / 0.09);
+  --border:        rgb(var(--ivory-rgb) / 0.15);
+  --border-strong: rgb(var(--ivory-rgb) / 0.26);
+
+  --danger:  var(--coral-400); --danger-soft: rgb(var(--coral-rgb) / 0.16);
+
+  /* A faint light on the top of raised surfaces; bright screenshots dimmed
+     a little so they don't glare against the night blue (hover restores) */
+  --sheen:         linear-gradient(180deg, rgb(var(--white-rgb) / 0.045), transparent 45%);
+  --media-filter:  brightness(0.88) saturate(0.95);
+  --grain-opacity: 0.18;
+  --disc: radial-gradient(circle at 35% 30%, var(--blue-800), var(--blue-880) 60%, var(--blue-920));
 
   /* In the dark, depth comes from lighter surfaces + edge light;
      shadows only separate, so they get darker and tighter. */
-  --shadow-rgb: 0 0 0;
-  --elev-1: 0 1px 2px rgb(0 0 0 / 0.4);
-  --elev-2: 0 2px 4px rgb(0 0 0 / 0.35), 0 8px 20px -8px rgb(0 0 0 / 0.5);
-  --elev-3: 0 4px 8px rgb(0 0 0 / 0.35), 0 20px 40px -14px rgb(0 0 0 / 0.6);
-  --elev-4: 0 8px 16px rgb(0 0 0 / 0.4), 0 40px 72px -20px rgb(0 0 0 / 0.7);
-  --edge-light: inset 0 1px 0 rgb(255 255 255 / 0.06);
-  --edge-shade: inset 0 -1px 0 rgb(0 0 0 / 0.3);
-  --well-inset: inset 0 1px 3px rgb(0 0 0 / 0.45);
-  --glass-edge: rgb(255 255 255 / 0.08);
-  --spotlight:  rgb(120 214 219 / 0.08);
+  --shadow-rgb: var(--night-shadow-rgb);
+  --elev-1: 0 1px 2px rgb(var(--shadow-rgb) / 0.5);
+  --elev-2: 0 2px 4px rgb(var(--shadow-rgb) / 0.45), 0 8px 20px -8px rgb(var(--shadow-rgb) / 0.6);
+  --elev-3: 0 4px 8px rgb(var(--shadow-rgb) / 0.45), 0 20px 40px -14px rgb(var(--shadow-rgb) / 0.7);
+  --elev-4: 0 8px 16px rgb(var(--shadow-rgb) / 0.5), 0 40px 72px -20px rgb(var(--shadow-rgb) / 0.8);
+  --edge-light: inset 0 1px 0 rgb(var(--white-rgb) / 0.07);
+  --well-inset: inset 0 1px 3px rgb(var(--shadow-rgb) / 0.55);
+  --glass-edge: rgb(var(--ivory-rgb) / 0.12);
+  --spotlight:  rgb(var(--coral-rgb) / 0.1);
+  --card-glow:  0 24px 56px -30px rgb(var(--coral-rgb) / 0.35);
+  --glow-sm:    0 0 18px -6px rgb(var(--coral-rgb) / 0.6);
+  --glow-md:    0 10px 30px -8px rgb(var(--coral-rgb) / 0.65);
+}
+
+/* ── More contrast requested: no texture or dimming, firmer edges ───── */
+@media (prefers-contrast: more) {
+  :root, .dark, .on-inverse {
+    --grain-opacity: 0;
+    --media-filter: none;
+    --sheen: linear-gradient(transparent, transparent);
+  }
+  :root {
+    --border-subtle: rgb(var(--blue-rgb) / 0.25);
+    --border:        rgb(var(--blue-rgb) / 0.4);
+    --border-strong: rgb(var(--blue-rgb) / 0.6);
+  }
+  .dark, .on-inverse {
+    --border-subtle: rgb(var(--ivory-rgb) / 0.22);
+    --border:        rgb(var(--ivory-rgb) / 0.32);
+    --border-strong: rgb(var(--ivory-rgb) / 0.5);
+  }
 }
 
 /* ── Reduced motion: zero the movement tokens, keep colour feedback ── */
@@ -190,6 +272,6 @@
 
 /* ── Low-power / small screens: no backdrop blur (expensive to composite) ── */
 @media (max-width: 640px), (prefers-reduced-transparency: reduce) {
-  :root { --glass-blur: 0px; --surface-glass: rgb(255 255 255 / 0.94); }
-  .dark  { --surface-glass: rgb(19 26 39 / 0.96); }
+  :root { --glass-blur: 0px; --surface-glass: rgb(var(--ivory-rgb) / 0.96); }
+  .dark, .on-inverse { --surface-glass: rgb(var(--blue-950-rgb) / 0.96); }
 }

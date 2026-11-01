@@ -1,0 +1,49 @@
+# Every push and pull request: the same gates as `npm run check`, plus a
+# dependency audit. Vercel deploys from the default branch, so a red run here
+# is the signal not to merge.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      # Unit, component, API-route, design-system, content-integrity and
+      # retrieval-evaluation tests
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # Fails on high or critical advisories in the dependencies that ship
+      # to production (dev tools are excluded).
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high

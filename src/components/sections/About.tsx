@@ -1,21 +1,31 @@
 import { Card } from '@/components/ui/Card'
 import { Reveal } from '@/components/ui/Reveal'
 import { SectionHeader } from '@/components/ui/SectionHeader'
-import { ABOUT_PARAGRAPHS, HOBBIES, PROFILE, STATS } from '@/content/profile'
+import type { ComponentType } from 'react'
+import { BikeIcon, ClapperboardIcon, TvIcon, WavesIcon, type IconProps } from '@/components/ui/icons'
+import { ABOUT_PARAGRAPHS, HOBBIES, PROFILE, STATS, type Hobby } from '@/content/profile'
+
+/* Monochrome line icons, not emoji: emoji bring their own colours into a three-colour palette. */
+const HOBBY_ICON: Record<Hobby, ComponentType<IconProps>> = {
+  Cycling:  BikeIcon,
+  Swimming: WavesIcon,
+  Anime:    TvIcon,
+  Movies:   ClapperboardIcon,
+}
 
 export default function About() {
   return (
     <section id="about" aria-labelledby="about-heading" className="section section--sunken">
       <div className="container-site grid items-start gap-10 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-7">
-          <SectionHeader eyebrow="About" index={4} title="A bit about me" titleId="about-heading" className="mb-8! md:mb-8!" />
+          <SectionHeader eyebrow="About" index={4} title="A bit about me" highlight="me" titleId="about-heading" className="mb-8! md:mb-8!" />
 
-          <Reveal className="grid max-w-[62ch] gap-4 prose-muted">
+          <Reveal className="grid max-w-prose gap-4 prose-muted">
             {ABOUT_PARAGRAPHS.map(p => <p key={p}>{p}</p>)}
           </Reveal>
 
           <Reveal delay={120}>
-            <p className="pill mt-8 normal-case tracking-normal">
+            <p className="pill mt-8 font-sans text-xs font-normal normal-case tracking-normal">
               <span aria-hidden="true" className="dot dot--live" />
               {PROFILE.availability}
             </p>
@@ -30,7 +40,7 @@ export default function About() {
               {STATS.map(stat => (
                 <Card key={stat.label} tilt padding="md" className="flex flex-col-reverse justify-end gap-1.5 text-center">
                   <dt className="font-mono text-xs leading-snug text-fg-subtle">{stat.label}</dt>
-                  <dd className="font-serif text-[clamp(1.5rem,1.2rem+1.2vw,2rem)] font-bold leading-none text-accent">
+                  <dd className="stat-figure self-center">
                     {stat.value}
                   </dd>
                 </Card>
@@ -42,12 +52,15 @@ export default function About() {
             <Card padding="md">
               <h3 id="hobbies-heading" className="eyebrow text-fg-subtle">Outside work</h3>
               <ul aria-labelledby="hobbies-heading" className="mt-4 grid grid-cols-4 gap-2 text-center">
-                {HOBBIES.map(h => (
-                  <li key={h.label} className="grid justify-items-center gap-1.5">
-                    <span aria-hidden="true" className="text-2xl">{h.emoji}</span>
-                    <span className="font-mono text-xs text-fg-muted">{h.label}</span>
-                  </li>
-                ))}
+                {HOBBIES.map(hobby => {
+                  const Icon = HOBBY_ICON[hobby]
+                  return (
+                    <li key={hobby} className="grid justify-items-center gap-2.5">
+                      <span className="icon-tile"><Icon size={19} /></span>
+                      <span className="font-mono text-xs text-fg-muted">{hobby}</span>
+                    </li>
+                  )
+                })}
               </ul>
             </Card>
           </Reveal>

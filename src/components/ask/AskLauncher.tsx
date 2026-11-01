@@ -18,8 +18,10 @@ export function AskLauncher() {
 
   return (
     <>
-      <div className="ask-launcher" hidden={open}>
+      {/* A deep-blue pill in both themes, so it never outshouts the page's own call to action */}
+      <div className="ask-launcher on-inverse" hidden={open}>
         <Button
+          variant="glass"
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={open}

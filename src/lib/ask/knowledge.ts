@@ -1,6 +1,6 @@
 import { CASE_STUDIES } from '@/content/case-studies'
 import { PROJECTS, STATUS_LABEL } from '@/content/projects'
-import { ABOUT_PARAGRAPHS, CONTACT, JOBS, LEARNING_NOTE, PROFILE, SKILL_GROUPS } from '@/content/profile'
+import { ABOUT_PARAGRAPHS, CONTACT, HOBBIES, JOBS, LEARNING_NOTE, PROFILE, SKILL_GROUPS } from '@/content/profile'
 
 /** One retrievable passage: what the assistant may quote, and where it lives on the site. */
 export interface Chunk {
@@ -26,9 +26,10 @@ export function buildKnowledge(): Chunk[] {
     },
     {
       id: 'story',
-      title: 'Sidd’s story and interests',
+      title: 'Sidd’s story, hobbies and what he’s learning',
       href: '/#about',
-      text: ABOUT_PARAGRAPHS.join(' '),
+      /* The hobby list and learning note are on the page, so the assistant should know them too */
+      text: `${ABOUT_PARAGRAPHS.join(' ')} Hobbies outside work: ${HOBBIES.join(', ')}. Currently learning: ${LEARNING_NOTE}`,
     },
     {
       id: 'availability',
@@ -52,7 +53,7 @@ export function buildKnowledge(): Chunk[] {
       id: `skills-${group.label.toLowerCase().replace(/[^a-z]+/g, '-')}`,
       title: `Skills: ${group.label}`,
       href: '/#skills',
-      text: `${group.label} skills: ${group.skills.join(', ')}. ${LEARNING_NOTE}`,
+      text: `${group.label} skills: ${group.skills.join(', ')}.`,
     })),
     ...PROJECTS.map((p): Chunk => ({
       id: `project-${p.slug}`,
